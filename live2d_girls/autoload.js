@@ -38,7 +38,7 @@ function loadExternalResource(url, type) {
 			apiPath: "/live2d/",
 			//cdnPath: "https://你的对象存储域名/live2d/"
 			// cdnPath: "http://127.0.0.1:5500/live2d/" https://piaoi.github.io/Piao/
-			cdnPath: "https://piaoi.github.io/Piao/live2d/"
+			cdnPath: "https://piaoi.github.io/live2d/"
 		});
 	});
 console.log(`
