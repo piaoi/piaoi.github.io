@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8" />
+<title>Nahida!</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<link rel="icon" href="/favicon.ico">
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" /> -->
+</head>
+<body>
+<img alt="" src="./static/img/01.gif" class="preload">
+<img alt="" src="./static/img/02.gif" class="preload">
+<img alt="" src="./static/img/03.gif" class="preload">
+<img alt="" src="./static/img/04.gif" class="preload">
+<div id="content">
+    <div id='clock-surface' style="z-index: 10;"><img
+        src="./static/img/arrow-back-circle-outline.svg"
+        alt=""
+        height="100px"
+        width="100px" style="margin-left: 150px; display: flex;border-radius: 50%;height:50px;width:50px;background-color: #ffffff7b;backdrop-filter:blur(50px);" type="button" value="" onclick="javascript:history.back ();">
+    </div>
+<h1>欢迎来看 ~ 纳西妲 ~ </h1>
+<hr id="subtitle-seperator" />
+<h2>
+纳西妲的网页, <del>讨厌的</del> 最可爱的天才原神角色在这里.
+</h2>
+<div id="counter-container">
+<p>纳西妲已经旋转了</p>
+<br/>
+<br/>
+<p id="counter">?</p>
+<br/>
+<br/>
+<p>次</p>
+<button id="counter-button" onclick="if (!window.__cfRLUnblockHandlers) return false; counterClick()" data-cf-modified-202dce07429283abf48d7535->
+纳西妲旋转跳跃~!
+</button>
+</div>
+<hr/>
+</div>
+<script src="./static/js/rocket-loader.min.js" data-cf-settings="faef34276f11a9d5597309ed-|49" defer=""></script>
+</body>
+</html>
+<script>
+    //varible
+    var audioList = [
+	new Audio("./static/audio/01.mp3"),
+    new Audio("./static/audio/02.mp3"),
+    new Audio("./static/audio/03.wav"),
+    new Audio("./static/audio/04.wav"),
+    new Audio("./static/audio/05.wav"),
+    new Audio("./static/audio/06.wav"),
+    new Audio("./static/audio/07.wav"),
+    new Audio("./static/audio/08.wav"),
+	];
+
+    for (const audio of audioList) {
+        audio.preload = "auto";
+    }
+
+    var firstSquish = true;
+    //end varible
+
+    //counter button
+    function counterClick() {
+        var counterElement = document.getElementById("counter");
+        let temporaryCounter = localStorage.getItem('count')
+        temporaryCounter++
+        counterElement.innerHTML = temporaryCounter
+        localStorage.setItem('count', temporaryCounter);
+
+        playKuru();
+        animateHerta();
+    }
+
+    function playKuru() {
+        var audio;
+
+        if (firstSquish) {
+            firstSquish = false;
+            audio = audioList[0].cloneNode();
+        } else {
+            var random = Math.floor(Math.random() * 8) + 1;
+            audio = audioList[random].cloneNode();
+        }
+
+        audio.play();
+
+        audio.addEventListener("ended", function () {
+            this.remove();
+        });
+    }
+
+    function animateHerta() {
+        var counter_button = document.getElementById("counter-button");
+        var id = null;
+
+        var random = Math.floor(Math.random() * 4) + 1;
+        var elem = document.createElement("img");
+        elem.src = `./static/img/0${random}.gif`;
+        elem.style.position = "absolute";
+        elem.style.right = "-510px";
+        elem.style.top = counter_button.getClientRects()[0].bottom + scrollY - 430 + "px"
+        elem.style.zIndex = "-1";
+        document.body.appendChild(elem);
+
+        var pos = -510;
+        var limit = window.innerWidth + 510;
+        clearInterval(id);
+        id = setInterval(frame, 12);
+        function frame() {
+            if (pos >= limit) {
+                clearInterval(id);
+                elem.remove()
+            } else {
+                pos += 20;
+                elem.style.right = pos + 'px';
+            }
+        }
+    }
+    //end counter button
+</script>

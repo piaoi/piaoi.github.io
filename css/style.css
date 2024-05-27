@@ -1,0 +1,261 @@
+/* *{
+    margin: 10;
+    padding: 10;
+    box-sizing: border-box;
+} */
+#player{
+    position:relative;
+    /* 对定位，position属性值为absolute，之后再设置top、right、bottom、left四个方向的值
+    top和bottom可能会有冲突，不设置其一也可以，左右一样
+    在原有的块标签位置移动之后，原位置被释放，可以被其他块标签占用 */
+    top: 0%;
+    left: 0px;
+}
+/* 歌曲信息模块 */
+#player-content1{
+    position: absolute;
+    top:0px;
+    left:15px;
+    width: 170px;
+    height:88px;
+    padding:0 20px 0 130px;
+    background: rgb(190, 209, 215);
+    /* backdrop-filter:blur(50px); */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    /* transition过渡动画：设置top属性过渡，过渡时间0.3s,速度曲线为ease(逐渐变慢) */
+    transition:top 1s ease; 
+    /* 弹出动画 */
+}
+#player-content1.active{
+    top:-85px;
+}
+.music-name,
+.artist-name{
+    height: 20px;
+    margin-top:5px;
+    font-size:14px;
+    color: #ffffff
+}
+.artist-name{
+    font-size:12px;
+    color: #ffffff
+}
+.time{
+    font-size:12px;
+    height:15px;
+    margin: 5px 0;
+}
+.current-time{
+    float: left;
+}
+.total-time{
+    float: right;
+}
+.current-time,.total-time{
+    color: transparent;
+    font-size: 11px;
+    background-color: #e8f5ff;
+    border-radius: 10px;
+    transition: 0.3s ease all;
+}
+.time.active .current-time, .time.active .total-time{
+    color: rgb(54, 127, 196);
+    background-color: transparent;
+}
+
+
+#s-area, #seek-bar{
+    position: relative;
+    height: 4px;
+    border-radius: 4px;
+}
+
+#s-area{
+    background-color:#e8f5ff;
+    /* 播放进度条（静态） */
+    cursor: pointer;
+}
+
+#ins-time{
+    position: absolute;
+    top: -29px;
+    color: #fff;
+    font-size: 12px;
+    white-space: pre;
+    padding: 5px 6px;
+    border-radius: 4px;
+	display:none;
+}
+
+#s-hover{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.2;
+    z-index: 2;
+}
+
+#ins-time, #s-hover{
+    background-color: #81818183;
+}
+
+#seek-bar{
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    background-color: rgb(102, 151, 197);
+    transition: 0.2s ease width;
+}
+
+#player-content2{
+    position: relative;
+    width:350px;
+    height:90px;
+    background: #5f7c9a6f;
+    backdrop-filter:blur(50px);
+    /* 毛玻璃效果 */
+    border-radius: 20px;
+    /* box-shadow: 0 30px 50px #c47190; */
+}
+/* 左侧封面图模块 */
+.music-imgs{
+    position: absolute;
+    top: -30px;
+    width: 100px;
+    height: 100px;
+    margin-left: 30px;
+    -webkit-transform: rotateZ(0);
+    transform: rotateZ(0);
+    transition: 0.3s ease all;
+    box-shadow: 0 0 0 10px #c3cae8;
+    /* 封面圆圈颜色 */
+    border-radius: 50%;
+    overflow: hidden;
+}
+/* 左侧封面图模块添加了active类名 */
+.music-imgs.active{
+    top: -50px;
+    box-shadow: 0 0 0 4px #c3cae8, 0 30px 50px -15px #ffffff;
+    /* 播放封面圆圈颜色 */
+}
+.music-imgs:before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    margin: -10px auto 0 auto;
+    background-color: #d6dee7;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px #fff;
+    z-index: -2;
+}
+/* 左侧封面图模块下的 图片div */
+.music-imgs .img{
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+/* 封面图模块添加了active类名后，图片div的样式添加 */
+/* 旋转时间 */
+.music-imgs.active .img{
+    z-index: 1;
+    -webkit-animation: rotateAlbumArt 15s linear 0s infinite forwards;
+            animation: rotateAlbumArt 15s linear 0s infinite forwards;
+}
+@-webkit-keyframes rotateAlbumArt
+{
+    0%{ -webkit-transform: rotateZ(0); transform: rotateZ(0); }
+    100%{ -webkit-transform: rotateZ(360deg); transform: rotateZ(360deg); }
+}
+
+@keyframes rotateAlbumArt
+{
+    0%{ -webkit-transform: rotateZ(0); transform: rotateZ(0); }
+    100%{ -webkit-transform: rotateZ(360deg); transform: rotateZ(360deg); }
+}
+#buffer-box
+{
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    height: 13px;
+    color: #ffffff;
+    font-size: 13px;
+    font-family: Helvetica;
+    text-align: center;
+    font-weight: bold;
+    line-height: 1;
+    padding: 6px;
+    margin: -12px auto 0 auto;
+    background-color: rgba(255, 255, 255, 0.738);   
+    /* 缓冲背景 */
+    opacity: 0;
+    z-index: 2;
+}
+
+.music-imgs .img, #buffer-box
+{
+    transition: 0.1s linear all;
+}
+
+.music-imgs.buffering .img
+{
+    opacity: 0.25;
+}
+
+.music-imgs.buffering .img.active
+{
+    opacity: 0.7;
+    -webkit-filter: blur(2px);
+    filter: blur(2px);
+}
+
+.music-imgs.buffering #buffer-box
+{
+    opacity: 0.7;
+}
+
+/* .player-controls{
+    position: absolute;
+    top:20px;
+    left:150px;
+}
+.player-controls .btn{
+    float: left;
+    width:60px;
+    height:60px;
+    line-height: 60px;
+    font-size:24px;
+    color:#D6DEE7;
+} */
+.player-controls{
+    
+    position: absolute;
+    top:20px;
+    left:150px;
+}
+/* 修改css样式名称 */
+.player-controls .btns{
+    /* position: absolute;
+    top:20px;
+    left:150px; */
+    float: left;
+    width:60px;
+    height:60px;
+    line-height: 60px;
+    font-size:24px;
+    color:rgb(198, 224, 233);
+    /* 播放按钮颜色 */
+}

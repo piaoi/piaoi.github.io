@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<title>Kuru Kuru~</title>
+<link rel="stylesheet" href="static/css/style.css" type="text/css">
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com/"> -->
+<!-- <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin=""> -->
+<link href="static/css/css2.css" rel="stylesheet">
+</head>
+<body>
+<img alt="" src="./static/img/hertaa1.gif" class="preload">
+<img alt="" src="./static/img/hertaa2.gif" class="preload">
+<div id="content">
+    <div id='clock-surface' style="z-index: 10;"><img
+        src="./static/img/arrow-back-circle-outline.svg"
+        alt=""
+        height="100px"
+        width="100px" style="margin-left: 150px; display: flex;border-radius: 50%;height:50px;width:50px;background-color: #ffffff7b;backdrop-filter:blur(50px);" type="button" value="" onclick="javascript:history.back ();">
+    </div>
+<h1>欢迎来到 黑塔 咕噜噜</h1>
+<hr id="subtitle-seperator">
+<h2>
+黑塔专属网站 <del>吵闹的</del>  最可爱的天才星穹铁道角色在这
+</h2>
+<div id="counter-container">
+<p>黑塔 咕噜噜~</p>
+<br>
+<br>
+<p id="counter">?</p>
+<br>
+<br>
+<p>次</p>
+<button id="counter-button" onclick="if (!window.__cfRLUnblockHandlers) return true; counterClick()" data-cf-modified-faef34276f11a9d5597309ed-="">
+黑塔开始kuru~!
+</button>
+
+</div>
+<hr>
+</div>
+<script src="static/js/rocket-loader.min.js" data-cf-settings="faef34276f11a9d5597309ed-|49" defer=""></script>
+
+</body>
+</html>
+<script>
+    //varible
+    var audioList = [
+new Audio("./static/audio/gululu.mp3"), 
+new Audio("./static/audio/gururu.mp3"), 
+new Audio("./static/audio/yhdl.mp3"), 
+new Audio("./static/audio/zqq.mp3"), 
+new Audio("./static/audio/kuruto.mp3"), 
+new Audio("./static/audio/kuru1.mp3"), 
+new Audio("./static/audio/kuru2.mp3"), 
+new Audio("./static/audio/zqql.mp3"),
+    ];
+
+    for (const audio of audioList) {
+        audio.preload = "auto";
+    }
+
+    var firstSquish = true;
+    //end varible
+
+    //counter button
+    function counterClick() {
+        var counterElement = document.getElementById("counter");
+        let temporaryCounter = localStorage.getItem('count')
+        temporaryCounter++
+        counterElement.innerHTML = temporaryCounter
+        localStorage.setItem('count', temporaryCounter);
+
+        playKuru();
+        animateHerta();
+    }
+
+    function playKuru() {
+        var audio;
+
+        if (firstSquish) {
+            firstSquish = false;
+            audio = audioList[0].cloneNode();
+        } else {
+            var random = Math.floor(Math.random() * 8) + 1;
+            audio = audioList[random].cloneNode();
+        }
+
+        audio.play();
+
+        audio.addEventListener("ended", function () {
+            this.remove();
+        });
+    }
+
+    function animateHerta() {
+        var counter_button = document.getElementById("counter-button");
+        var id = null;
+
+        var random = Math.floor(Math.random() * 2) + 1;
+        var elem = document.createElement("img");
+        elem.src = `./static/img/hertaa${random}.gif`;
+        elem.style.position = "absolute";
+        elem.style.right = "-510px";
+        elem.style.top = counter_button.getClientRects()[0].bottom + scrollY - 430 + "px"
+        elem.style.zIndex = "-1";
+        document.body.appendChild(elem);
+
+        var pos = -510;
+        var limit = window.innerWidth + 510;
+        clearInterval(id);
+        id = setInterval(frame, 12);
+        function frame() {
+            if (pos >= limit) {
+                clearInterval(id);
+                elem.remove()
+            } else {
+                pos += 20;
+                elem.style.right = pos + 'px';
+            }
+        }
+    }
+    //end counter button
+</script>

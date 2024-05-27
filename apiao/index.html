@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飘啊飘啊飘啊飘啊飘</title>
+    <script>    //飘动光标
+        // Text Flag
+        // via http://www.javascript-fx.com/mouse_trail/index.html (200X)
+        // via fun24.com (defunct, 199X)
+        
+        function textFlag(options) {
+          let cursorOptions = options || {};
+          let hasWrapperEl = options && options.element;
+          let element = hasWrapperEl || document.body;
+          let text = cursorOptions.text ? " " + options.text : " Your Text Here";
+          let font = cursorOptions.font || "monospace";
+          let textSize = cursorOptions.textSize || 22;
+          let fontFamily = textSize + "px " + font;
+          let gap = cursorOptions.gap || textSize + 2;
+          let angle = 0;
+          let radiusX = 2;
+          let radiusY = 5;
+          let charArray = [];
+          let width = window.innerWidth;
+          let height = window.innerHeight;
+          let cursor = { x: width / 2, y: width / 2 };
+          for (let i = 0; i < text.length; i++) {
+            charArray[i] = { letter: text.charAt(i), x: width / 2, y: width / 2 };
+          }
+          let canvas, context, animationFrame;
+          const size = options?.size || 3;
+          let cursorsInitted = false;
+          const prefersReducedMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+          );
+          // Re-initialise or destroy the cursor when the prefers-reduced-motion setting changes
+          prefersReducedMotion.onchange = () => {
+            if (prefersReducedMotion.matches) {
+              destroy();
+            } else {
+              init();
+            }
+          };
+        
+          function init() {
+            // Don't show the cursor trail if the user has prefers-reduced-motion enabled
+            if (prefersReducedMotion.matches) {
+              console.log(
+                "This browser has prefers reduced motion turned on, so the cursor did not init"
+              );
+              return false;
+            }
+        
+            canvas = document.createElement("canvas");
+            context = canvas.getContext("2d");
+            canvas.style.top = "0px";
+            canvas.style.left = "0px";
+            canvas.style.pointerEvents = "none";
+        
+            if (hasWrapperEl) {
+              canvas.style.position = "absolute";
+              element.appendChild(canvas);
+              canvas.width = element.clientWidth;
+              canvas.height = element.clientHeight;
+            } else {
+              canvas.style.position = "fixed";
+              document.body.appendChild(canvas);
+              canvas.width = width;
+              canvas.height = height;
+            }
+        
+            bindEvents();
+            loop();
+          }
+        
+          // Bind events that are needed
+          function bindEvents() {
+            element.addEventListener("mousemove", onMouseMove);
+            window.addEventListener("resize", onWindowResize);
+          }
+        
+          function onWindowResize(e) {
+            width = window.innerWidth;
+            height = window.innerHeight;
+        
+            if (hasWrapperEl) {
+              canvas.width = element.clientWidth;
+              canvas.height = element.clientHeight;
+            } else {
+              canvas.width = width;
+              canvas.height = height;
+            }
+          }
+        
+          function onMouseMove(e) {
+            if (hasWrapperEl) {
+              const boundingRect = element.getBoundingClientRect();
+              cursor.x = e.clientX - boundingRect.left;
+              cursor.y = e.clientY - boundingRect.top;
+            } else {
+              cursor.x = e.clientX;
+              cursor.y = e.clientY;
+            }
+          }
+        
+          function updateParticles() {
+            context.clearRect(0, 0, width, height);
+        
+            angle += 0.15;
+            let locX = radiusX * Math.cos(angle);
+            let locY = radiusY * Math.sin(angle);
+        
+            for (let i = charArray.length - 1; i > 0; i--) {
+              charArray[i].x = charArray[i - 1].x + gap;
+              charArray[i].y = charArray[i - 1].y;
+              context.font = fontFamily;
+              
+                    context.fillStyle = "white";  //鼠标文本颜色
+              
+              context.fillText(charArray[i].letter, charArray[i].x, charArray[i].y);
+            }
+        
+            let x1 = charArray[0].x;
+            let y1 = charArray[0].y;
+            x1 += (cursor.x - x1) / 5 + locX + 2;
+            y1 += (cursor.y - y1) / 5 + locY;
+            charArray[0].x = x1;
+            charArray[0].y = y1;
+          }
+        
+          function loop() {
+            updateParticles();
+            animationFrame = requestAnimationFrame(loop);
+          }
+        
+          function destroy() {
+            canvas.remove();
+            cancelAnimationFrame(animationFrame);
+            element.removeEventListener("mousemove", onMouseMove);
+            window.addEventListener("resize", onWindowResize);
+          }
+        
+          init();
+        
+          return {
+            destroy: destroy,
+          };
+        }
+        </script>
+</head>
+<style>
+
+    *{
+        /* 初始化 */
+        padding: 0;
+        margin: 0;
+    }
+    body{
+        /* 使可爱鬼居中 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #000;
+    }
+    .ghost{
+        position: relative;
+        width: 160px;
+        height: 200px;
+    }
+    .body{
+        /* 制作身体 */
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-top-right-radius: 80px;
+        border-top-left-radius: 80px;
+        background-color: #fff;
+        animation: float 4s ease infinite;
+    }
+    @keyframes float {
+        0%,100%{
+            top: 0px;
+        }
+        40%{
+            top: -40px;
+        }
+    }
+    .face{
+        display: flex;
+        flex-wrap: wrap;
+        position: absolute;
+        top: 67px;
+        left: 40px;
+        width: 72px;
+        height: 41px;
+    }
+    .eye{
+        width: 20px;
+        height: 20px;
+        background-color: #000;
+        border-radius: 100%;
+    }
+    .eye.left{
+        margin-right: 32px;
+    }
+    .smile{
+        width: 32px;
+        height: 16px;
+        background-color: #000;
+        margin-top: 6px;
+        margin-left: 20px;
+        border-bottom-left-radius: 16px 12px;
+        border-bottom-right-radius: 16px 12px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+    .rosy{
+        position: absolute;
+        top: 28px;
+        width: 22px;
+        height: 8px;
+        background-color: #FFAA9E;
+        border-radius: 100%;
+    }
+    .rosy.left{
+        left: -6px;
+        transform: rotate(-8deg);
+    }
+    .rosy.right{
+        right: -6px;
+        transform: rotate(8deg);
+    }
+    .arm{
+        position: absolute;
+        top: 136px;
+        width: 60px;
+        height: 40px;
+        background-color: #fff;
+    }
+    .arm.left{
+        left: -4px;
+        border-radius: 60% 100%;
+        animation: arms-left 4s ease infinite;
+    }
+    .arm.right{
+        right: -65px;
+        border-radius: 100% 60%;
+        animation: arms-right 4s ease infinite;
+    }
+    @keyframes arms-left {
+        0%,100%{
+            transform: translate(-50%,-50%) rotate(50deg);
+        }
+        40%{
+            transform: translate(-50%,-50%) rotate(40deg);
+        }
+    }
+    @keyframes arms-right {
+        0%,100%{
+            transform: translate(-50%,-50%) rotate(-50deg);
+        }
+        40%{
+            transform: translate(-50%,-50%) rotate(-40deg);
+        }
+    }
+    .bottom{
+        display: flex;
+        position: absolute;
+        top: 100%;
+        left: 0px;
+        right: -1px;
+    }
+    .bottom div{
+        flex-grow: 1;
+        position: relative;
+        top: -14px;
+        height: 28px;
+        border-radius: 100%;
+        background-color: #fff;
+    }
+    .bottom div:nth-child(2n){
+        top: -10px;
+        margin: 0 -2px;
+        background-color: transparent;
+        border-top: 10px solid #fff;
+    }
+    .shadow{
+        position: absolute;
+        bottom: -100px;
+        left: 50%;
+        width: 200px;
+        height: 12px;
+        border-radius: 100%;
+        background-color: gray;
+        animation: shadow 4s ease infinite;
+    }
+    @keyframes shadow {
+        0%,100%{
+            transform: translateX(-50%) scale(1);
+        }
+        40%{
+            transform: translateX(-50%) scale(0.5);
+        }
+    }
+    .cursor {
+		/* <!-- width: 100%; -->
+		<!-- height: 100%;  --> */
+		/* position: relative; */
+        position:sticky;
+		z-index: 100;
+		}
+</style>
+<body>
+
+    <div id='clock-surface' style="z-index: 10;"><img
+        src="../img/arrow-back-circle-outline.svg"
+        alt=""
+        height="100px"
+        width="100px" style=" position: fixed ! important; left: 465px; top: 100px;border-radius: 50%;height:50px;width:50px;background-color: #ffffff7b;backdrop-filter:blur(50px);" type="button" value="" onclick="javascript:history.back();">
+    </div>
+    <div > <img style="width: 445px;padding-left: 0px;padding-right: 0px;" src="https://www.dhkk.cn/rili/index.php"></div>
+
+    <div class="textwidget custom-html-widget"><div class="card-content">
+        <canvas id="canvas" style="width:90%;"></canvas>
+        <script>(function(){var t=820;var a=250;var r=7;var n=10;var e=.65;var f;var o=[];const v=["#33B5E5","#0099CC","#AA66CC","#9933CC","#99CC00","#669900","#FFBB33","#FF8800","#FF4444","#CC0000"];var h=[];var u=[[[0,0,1,1,1,0,0],[0,1,1,0,1,1,0],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[0,1,1,0,1,1,0],[0,0,1,1,1,0,0]],[[0,0,0,1,1,0,0],[0,1,1,1,1,0,0],[0,0,0,1,1,0,0],[0,0,0,1,1,0,0],[0,0,0,1,1,0,0],[0,0,0,1,1,0,0],[0,0,0,1,1,0,0],[0,0,0,1,1,0,0],[0,0,0,1,1,0,0],[1,1,1,1,1,1,1]],[[0,1,1,1,1,1,0],[1,1,0,0,0,1,1],[0,0,0,0,0,1,1],[0,0,0,0,1,1,0],[0,0,0,1,1,0,0],[0,0,1,1,0,0,0],[0,1,1,0,0,0,0],[1,1,0,0,0,0,0],[1,1,0,0,0,1,1],[1,1,1,1,1,1,1]],[[1,1,1,1,1,1,1],[0,0,0,0,0,1,1],[0,0,0,0,1,1,0],[0,0,0,1,1,0,0],[0,0,1,1,1,0,0],[0,0,0,0,1,1,0],[0,0,0,0,0,1,1],[0,0,0,0,0,1,1],[1,1,0,0,0,1,1],[0,1,1,1,1,1,0]],[[0,0,0,0,1,1,0],[0,0,0,1,1,1,0],[0,0,1,1,1,1,0],[0,1,1,0,1,1,0],[1,1,0,0,1,1,0],[1,1,1,1,1,1,1],[0,0,0,0,1,1,0],[0,0,0,0,1,1,0],[0,0,0,0,1,1,0],[0,0,0,1,1,1,1]],[[1,1,1,1,1,1,1],[1,1,0,0,0,0,0],[1,1,0,0,0,0,0],[1,1,1,1,1,1,0],[0,0,0,0,0,1,1],[0,0,0,0,0,1,1],[0,0,0,0,0,1,1],[0,0,0,0,0,1,1],[1,1,0,0,0,1,1],[0,1,1,1,1,1,0]],[[0,0,0,0,1,1,0],[0,0,1,1,0,0,0],[0,1,1,0,0,0,0],[1,1,0,0,0,0,0],[1,1,0,1,1,1,0],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[0,1,1,1,1,1,0]],[[1,1,1,1,1,1,1],[1,1,0,0,0,1,1],[0,0,0,0,1,1,0],[0,0,0,0,1,1,0],[0,0,0,1,1,0,0],[0,0,0,1,1,0,0],[0,0,1,1,0,0,0],[0,0,1,1,0,0,0],[0,0,1,1,0,0,0],[0,0,1,1,0,0,0]],[[0,1,1,1,1,1,0],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[0,1,1,1,1,1,0],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[0,1,1,1,1,1,0]],[[0,1,1,1,1,1,0],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[1,1,0,0,0,1,1],[0,1,1,1,0,1,1],[0,0,0,0,0,1,1],[0,0,0,0,0,1,1],[0,0,0,0,1,1,0],[0,0,0,1,1,0,0],[0,1,1,0,0,0,0]],[[0,0,0,0],[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0],[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0],[0,0,0,0]]];function l(t){var a=[];f.fillStyle="#005EAC";var r=new Date;var e=70,o=30;var v=r.getHours();var u=Math.floor(v/10);var l=v%10;a.push({num:u});a.push({num:l});a.push({num:10});var c=r.getMinutes();var u=Math.floor(c/10);var l=c%10;a.push({num:u});a.push({num:l});a.push({num:10});var M=r.getSeconds();var u=Math.floor(M/10);var l=M%10;a.push({num:u});a.push({num:l});for(var p=0;p<a.length;p++){a[p].offsetX=e;e=m(e,o,a[p].num,t);if(p<a.length-1){if(a[p].num!=10&&a[p+1].num!=10){e+=n}}}if(h.length==0){h=a}else{for(var C=0;C<h.length;C++){if(h[C].num!=a[C].num){s(a[C]);h[C].num=a[C].num}}}i(t);g();return r}function s(t){var a=t.num;var n=u[a];for(var e=0;e<n.length;e++){for(var f=0;f<n[e].length;f++){if(n[e][f]==1){var h={offsetX:t.offsetX+r+r*2*f,offsetY:30+r+r*2*e,color:v[Math.floor(Math.random()*v.length)],g:1.5+Math.random(),vx:Math.pow(-1,Math.ceil(Math.random()*10))*4+Math.random(),vy:-5};o.push(h)}}}}function i(t){for(var a=0;a<o.length;a++){t.beginPath();t.fillStyle=o[a].color;t.arc(o[a].offsetX,o[a].offsetY,r,0,2*Math.PI);t.fill()}}function g(){var n=0;for(var f=0;f<o.length;f++){var v=o[f];v.offsetX+=v.vx;v.offsetY+=v.vy;v.vy+=v.g;if(v.offsetY>a-r){v.offsetY=a-r;v.vy=-v.vy*e}if(v.offsetX>r&&v.offsetX<t-r){o[n]=o[f];n++}}for(;n<o.length;n++){o.pop()}}function m(t,a,n,e){var f=u[n];for(var o=0;o<f.length;o++){for(var v=0;v<f[o].length;v++){if(f[o][v]==1){e.beginPath();e.arc(t+r+r*2*v,a+r+r*2*o,r,0,2*Math.PI);e.fill()}}}e.beginPath();t+=f[0].length*r*2;return t}var c=document.getElementById("canvas");c.width=t;c.height=a;f=c.getContext("2d");var M=new Date;setInterval(function(){f.clearRect(0,0,f.canvas.width,f.canvas.height);l(f)},50)})();</script>
+        </div></div>
+
+    <div class="ghost">
+        <!-- 身体部分 -->
+        <div class="body">
+            <div class="face">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="smile"></div>
+                <!-- 腮红 -->
+                <div class="rosy left"></div>
+                <div class="rosy right"></div>
+            </div>
+            <!-- 手臂 -->
+            <div class="arm left"></div>
+            <div class="arm right"></div>
+            <!-- 尾部 -->
+            <div class="bottom">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+        <!-- 影子 -->
+        <div class="shadow"></div>
+
+        
+        <div width="100%" align="center" >
+            <body class="cursor">
+                <script>  //鼠标样式
+                    new textFlag({ element: document.querySelector("#textFlag"), text: '飘飘 飘啊飘啊飘啊飘啊飘' })
+                </script>
+            </body>
+        </div>
+    </div>
+</body>
+</html>

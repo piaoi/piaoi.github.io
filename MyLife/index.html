@@ -1,0 +1,91 @@
+<!--
+ * @Author: 木白广木林
+ * @Date: 2024-05-23 16:47:11
+ * @LastEditTime: 2024-05-23 17:25:42
+ * @LastEditors: 木白广木林
+ * @Description: None
+ * @FilePath: \Index\shadow.html
+ * 检查自己的代码是非常愚蠢的行为，这是对本身实力的不信任。
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Light & Shadow</title>
+</head> 
+<body>
+    <div id='clock-surface' style="z-index: 10;">back<img
+        src="../img/arrow-back-circle-outline.svg"
+        alt=""
+        height="100px"
+        width="100px" style="margin-left: 150px; display: flex;border-radius: 50%;height:50px;width:50px;background-color: #ffffff7b;backdrop-filter:blur(50px);" type="button" value="" onclick="javascript:history.back ();">
+    </div>
+<div id="text">Sad since  2001.</div>
+<div id="light"></div>
+<script>
+let text = document.getElementById('text');
+let light = document.getElementById('light');
+document.addEventListener('mousemove',function(event){
+    let mouseX = event.clientX;
+    let mouseY = event.clientY;
+    light.style.left = mouseX + 'px';
+    light.style.top = mouseY + 'px';
+
+    let distanceX = mouseX - text.offsetLeft - text.offsetWidth / 2;
+    let distanceY = mouseY - text.offsetTop - text.offsetHeight / 2;
+
+    let newShadow = '';
+    for(var i = 0; i < 200; i++){
+        let shadowX = -distanceX * (i / 200);
+        let shadowY = -distanceY * (i / 200);
+        let opacity = 1 - (i / 100);
+        newShadow += (newShadow ? ',' : '') + shadowX + 'px ' + shadowY + 'px 0 rgba(33,33,33,'+opacity+')';
+        }
+        text.style.textShadow = newShadow;
+})
+</script>
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap');
+*
+    {
+        margin:0;
+        padding:0;
+        box-sizing: border-box;
+        font-family:'Poppins',sans-serif;
+    }
+    
+body
+{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    min-height:100vh;
+    background:#333;
+    overflow: hidden;
+}
+#text{
+    position: relative;
+    color:#fff;
+    font-weight:100;
+    font-size: 10em;
+    cursor: default;
+}
+#light{
+    position: absolute;
+    transform:translate(-50%,-50%);
+    width: 50px;
+    height:50px;
+    background:#fff;
+    border-radius:50%;
+    box-shadow: 0 0 15px #fff,
+    0 0 50px #fff,
+    0 0 100px #fff,
+    0 0 200px #fff,
+    0 0 300px #fff;
+}
+</style>
+</body>
+</html>

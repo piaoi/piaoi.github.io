@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ZH-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>习惯就好~</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            /* align-items: center; */
+            min-height: 100vh;
+            /* 背景渐变 */
+            background-image: linear-gradient(to top, #9795f0 0%, #fbc8d4 100%);
+        }
+
+        .shell {
+            position: relative;
+            /* height: 650px; */
+            /* 加上倒影 */
+            /* -webkit-box-reflect: below 200px linear-gradient(transparent, transparent,
+                    transparent, transparent, #0005); */
+
+        }
+
+        .cloud {
+            position: relative;
+            margin-left: 300px;
+            /* top: -20px; */
+            width:450px;
+            height: 200px;;
+            background-image: url(../img/11.png);
+            background-size:cover;
+        }
+        .you{
+            position: relative;
+            top: 120px;
+           width:400px;
+            height: 200px;
+            background-image: url(../img/22.png);
+            background-size: cover;
+        
+        }
+
+        .text {
+            position: absolute;
+            top:150px;
+            line-height: 20px;
+            color: #fff;
+            text-shadow: 0 0 5px #fff,
+                0 0 15px #fff,
+                0 0 30px #fff;
+            animation: rain 1s linear forwards;
+        }
+
+        .youtext {
+            position: absolute;
+            top:150px;
+            line-height: 20px;
+            color: #fff;
+            text-shadow: 0 0 5px #fff,
+                0 0 15px #fff,
+                0 0 30px #fff;
+            animation: yourain 1s linear forwards;
+        }
+
+        @keyframes rain {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+
+            80% {
+                transform: translateY(480px) scale(1);
+            }
+
+            /* 让雨点落到最下面时回弹10px后变大一点三倍并使其透明度消失可以 
+            达到真实雨水落地后溅射消失的效果 */
+            100% {
+                transform: translateY(450px) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        @keyframes yourain {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+
+            80% {
+                transform: translateY(350px) scale(1)
+            }
+
+            /* 让雨点落到最下面时回弹10px后变大一点三倍并使其透明度消失可以 
+            达到真实雨水落地后溅射消失的效果 */
+            100% {
+                transform: translateY(300px) scale(1.3);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id='clock-surface' style="z-index: 10;"><img
+        src="../img/arrow-back-circle-outline.svg"
+        alt=""
+        height="100px"
+        width="100px" style=" position: fixed ! important; left: 100px; top: 100px;border-radius: 50%;height:50px;width:50px;background-color: #ffffff7b;backdrop-filter:blur(50px);" type="button" value="" onclick="javascript:history.back();">
+    </div>
+    <div class="shell">
+        <div class="you"></div>
+    </div>
+    <div >
+        <div class="cloud"></div>
+    </div>
+
+    <script>
+
+        function randomText() {
+            const text = '我永远喜欢飘飘姐';
+            const letter = text[Math.floor(Math.random() * text.length)];
+            return letter;
+        }
+        function rain() {
+            const cloud = document.querySelector('.cloud');
+            const e = document.createElement('div');
+            const left = Math.floor(Math.random() * 460);
+            const size = Math.random() * 1.5;
+            const duration = Math.random() * 1.5;
+            const text = randomText();
+            e.classList.add('text');
+            e.innerText = text;
+            e.style.left = left + 'px';
+            e.style.fontSize = 1.5 + size + 'em';
+            e.style.animationDuration = 2.5 + duration + 's';
+            // 掉落时间
+            cloud.appendChild(e);
+            setTimeout(() => {
+                cloud.removeChild(e);
+            }, 5000);
+            // 存在时间
+        }
+        setInterval(rain, 75); 
+        // 定时器
+
+        function yourandomText() {
+            const youtext = '自己玩去自己玩去';
+            const youletter = youtext[Math.floor(Math.random() * youtext.length)];
+            return youletter;
+        }
+        function yourain() {
+            const you = document.querySelector('.you');
+            const y = document.createElement('div');
+            const youleft = Math.floor(Math.random() * 380);
+            // 宽度
+            const yousize = Math.random() * 1.5;
+            const youduration = Math.random() * 1.5;
+            const youtext = yourandomText();
+            y.classList.add('youtext');
+            y.innerText = youtext;
+            y.style.left = youleft + 'px';
+            y.style.fontSize = 2 + yousize + 'em';
+            y.style.animationDuration = 6 + youduration + 's';
+            // 掉落时间
+            you.appendChild(y);
+            setTimeout(() => {
+                you.removeChild(y);
+            }, 6000);
+            // 存在时间
+        }
+        setInterval(yourain, 900); 
+        // 定时器
+    </script>
+</body>
+
+</html>

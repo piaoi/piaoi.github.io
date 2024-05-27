@@ -1,0 +1,2247 @@
+<!--
+ * @Author: 木白广木林
+ * @Date: 2023-12-8 15:15:14
+ * @LastEditors: 木白广木林
+ * @LastEditTime: 2024-05-27 08:02:14
+ * @FilePath: \Index\index.html
+-->
+
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- 音乐播放器样式 -->
+    <link rel="stylesheet" href="font/iconfont.css">
+    <link rel="stylesheet" href="css/style.css">
+
+	<!-- 网页标题改变 -->
+	<script>document.addEventListener('visibilitychange',function(){if(document.visibilityState=='hidden'){normal_title=document.title;document.title='别走嘛，我会想你的';}else{document.title='回来啦！爱你哟~'}});</script>
+	<title>木白广木林 </title>
+    
+    <script src="./js/jquery-3.4.1.min.js"></script>
+    
+	<!-- 网页标题图标 -->
+	<!-- 如果放在body之内是无效的要放在<body>之前 -->
+	<link rel="icon" type="image/x-icon" href="./img/gf.png" />
+
+    <!-- 加载页面 -->
+    <link rel="stylesheet" href="./css/loader.css">
+    
+    <div class="fullscreen" id="fullscreenDiv" >
+       <div class="loader"></div>
+    </div>
+
+    <style>
+    .fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #000000; /* 初始颜色为半透明黑色 */
+    /* background: linear-gradient(to top,#515c6f,#00348d); */
+      opacity: 0.95; /* 初始透明度为1，完全不透明 */
+      transition: opacity 1s ease-in-out; /* 添加渐变效果 */
+      /* pointer-events: none;  */
+      /* 禁止全屏元素接受鼠标事件 */
+      z-index: 101; /* 确保在最上层 */
+      /* overflow: auto;  */
+      /* 启用滚动条 */
+    }
+    
+    </style>
+    <!-- <script src="./js/jquery-3.4.1.min.js"></script> -->
+    <script>
+     // 获取全屏元素
+     var fullscreenDiv = document.getElementById('fullscreenDiv');
+
+     // 禁止滚动
+    // fullscreenDiv.style.overflow = 'hidden';
+
+    // 3秒后触发渐变消失
+    setTimeout(function() {
+    // fullscreenDiv.style.overflow = 'hidden';
+    fullscreenDiv.style.opacity = '0';
+
+    // 在动画结束后，将全屏元素移除或隐藏
+    fullscreenDiv.addEventListener('transitionend', function() {
+        fullscreenDiv.style.display = 'none'; // 隐藏全屏元素
+    });
+    }, 2500);
+
+    </script>
+    
+    <div>        
+        <i  id="plane" ><img  alt="" class="planes" src="./img/plane.png"></i>
+    </div>
+    <style>
+         .planes{
+            width: 30px ;
+            height: 30px;
+            animation: float 4s ease-in-out infinite;
+            z-index: 110;
+            pointer-events: none; 
+            /* 禁止图片接收鼠标事件 */
+        }
+        /* 漂浮效果 */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    </style>
+    <script>
+        // event.stopPropagation();
+        let plane=document.getElementById('plane');
+        let deg=0,ex=0,ey=0,vx=0,vy=0,count=0;
+    
+        window.addEventListener('mousemove',(e)=>{
+            ex= window.pageXOffset + e.x - plane.offsetLeft - plane.clientWidth - 10;
+            ey= window.pageYOffset + e.y - plane.offsetTop - plane.clientHeight + 16 ;
+            deg=360*Math.atan(ey/ex)/(2*Math.PI)+45;
+            if(ex<0){
+                deg+=180;
+            }
+            count=0;
+        })
+        function draw(){
+            plane.style.transform='rotate('+deg+'deg)';
+            if(count<75){
+                vx+=ex/75;
+                vy+=ey/75;
+            }
+            plane.style.left= window.pageXOffset + vx+'px';
+            plane.style.top= window.pageYOffset + vy+'px';
+            count++;
+        }
+   
+        setInterval(draw, 5);
+    </script>
+<!-- 侧边栏 -->
+<!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+
+<div id="mySidebar" class="sidebar" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()">
+
+  <!-- <a href="./nixie.html"><i class="material-icons">info</i><span class="icon-text">辉光管(Nixie tube) -->
+  <a href="./nixie/">
+    <span class="icon-text"><img alt="" src="./img/logo-tableau.svg" style="float: left;width: 35px;height: 35px; margin-right: 30px;vertical-align: middle;background-color: #ffffffb6;border-radius: 50px;">
+    辉光管-Nixie tube
+    <style>
+
+        #clock-surface {
+            position: relative;
+            margin-left: 50px;
+            top: 15px;
+            /* left: 45px; */
+            padding-bottom: 35px;
+            /* width: 100%; */
+            text-align:left;
+        }
+
+        .nixie-container {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            margin: 0 10px;
+        }
+
+        .nixie-background {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+        }
+
+        .nixie-background.active {
+            /* background-color: rgba(255, 189, 23, 0.1); */
+            -webkit-filter: blur(25px);
+            -ms-filter: blur(25px);
+            -moz-filter: blur(25px);
+            filter:blur(50px);
+        }
+
+        .nixie-container .nixie-number {
+            /* 单个数字 */
+            display: block;
+            position: absolute;
+            width: 30px;
+        }
+
+        .nixie-number .nixie-number-part {
+            fill: none;
+            stroke: rgba(86, 43, 43, 0.418);
+            /* 字体宽度 */
+            stroke-width: 10;
+            stroke-linecap: round;
+            stroke-miterlimit: 10;
+        }
+
+        .nixie-number.active .nixie-number-part {
+            /* stroke: #ff5900; */
+            stroke: #ff4d00;
+
+        }
+
+        .white-space {
+            /* 间隙 */
+            display: inline-block;
+            width: 10px;
+        }
+    </style>
+<script>
+    $(document).ready(function () {
+        initializeNixieTube(6, 2);
+        update();
+
+        setInterval("update()", 1000);
+    });
+
+    function initializeNixieTube(number, whiteSpaceSpan) {
+        var template = $('#nixietube-template').html();
+        var targetHTML = "";
+        var whiteSpace = "<div class='white-space'></div>";
+        var CurrentTubeNumber = 0;
+        while (CurrentTubeNumber < number) {
+            if (whiteSpaceSpan > 0) {
+                if (CurrentTubeNumber % whiteSpaceSpan == 0 && CurrentTubeNumber > 0)
+                    $('#clock-surface').append(whiteSpace);
+            }
+            targetHTML = template.replace("[order]", CurrentTubeNumber);
+            $('#clock-surface').append(targetHTML);
+            CurrentTubeNumber++;
+        }
+    }
+
+    function update() {
+        var date = new Date();
+        var hour = date.getHours();
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+
+        var num0 = Math.floor(hour / 10);
+        var num1 = hour - 10 * num0;
+        var num2 = Math.floor(minute / 10);
+        var num3 = minute - 10 * num2;
+        var num4 = Math.floor(second / 10);
+        var num5 = second - 10 * num4;
+
+        for (var i = 0; i < 6; i++) {
+            var temp = eval('num' + i);
+            var grandSelector = "#nixie-tube-" + i;
+            var allNumbers = grandSelector + " .nixie-number";
+            var childSelector = grandSelector + " .nixie-number-" + temp;
+            var background = grandSelector + " .nixie-background";
+
+            $(allNumbers).each(function () {
+                if ($(this).hasClass('active')) {
+                    $(this).removeClass('active');
+                }
+            });
+
+            if ($(background).hasClass('active')) {
+                $(background).removeClass('active');
+            }
+
+            $(childSelector).addClass('active');
+            $(background).addClass('active');
+        }
+    }
+</script>
+    <div id='nixietube-template' style='display:none;'>
+        <div id='nixie-tube-[order]' class='nixie-container'>
+            <div class='nixie-background'></div>
+            <svg class='nixie-number nixie-number-1'  viewBox="0 0 256 512" version="1.1">
+                <line class="nixie-number-part" x1="128" y1="10" x2="66" y2="72"/>
+                <line class="nixie-number-part" x1="128" y1="492" x2="128" y2="10"/>
+            </svg>
+            <svg class='nixie-number nixie-number-2'  viewBox="0 0 256 512" version="1.1">
+                <path class="nixie-number-part"
+                      d="M38.3,66.4C59.3,32,91.7,10,128,10c63.5,0,115,67.5,115,150.7s-51.5,150.7-115,150.7"/>
+                <path class="nixie-number-part" d="M13,496c0-102,51.5-184.7,115-184.7"/>
+                <line class="nixie-number-part" x1="13" y1="496" x2="227.3" y2="496"/>
+            </svg>
+            <svg class='nixie-number nixie-number-0'  viewBox="0 0 256 512" version="1.1">
+                <ellipse class="nixie-number-part" cx="128" cy="256" rx="115" ry="246"/>
+            </svg>
+            <svg class='nixie-number nixie-number-3'  viewBox="0 0 256 512" version="1.1">
+                <path class="nixie-number-part"
+                      d="M22,410.8c16.8,46.4,57.9,86.3,106,85.9c59.7-0.5,115-63,115-140.6c0-74.1-50.4-126.7-93.5-138.1"/>
+                <line class="nixie-number-part" x1="149.5" y1="218" x2="243" y2="13"/>
+                <line class="nixie-number-part" x1="27.3" y1="13" x2="243" y2="13"/>
+            </svg>
+            <svg class='nixie-number nixie-number-9'  viewBox="0 0 256 512" version="1.1">
+                <circle class="nixie-number-part" cx="128" cy="128" r="115"/>
+                <line class="nixie-number-part" x1="237.4" y1="163.7" x2="135.8" y2="499"/>
+            </svg>
+            <svg class='nixie-number nixie-number-4'  viewBox="0 0 256 512" version="1.1">
+                <line class="nixie-number-part" x1="196.2" y1="13" x2="196.2" y2="496.7"/>
+                <line class="nixie-number-part" x1="196.2" y1="356.1" x2="22" y2="356.1"/>
+                <line class="nixie-number-part" x1="196.2" y1="13" x2="22" y2="356.1"/>
+            </svg>
+            <svg class='nixie-number nixie-number-8'  viewBox="0 0 256 512" version="1.1">
+                <ellipse class="nixie-number-part" cx="128" cy="129" rx="99.2" ry="116"/>
+                <ellipse class="nixie-number-part" cx="128" cy="370.8" rx="112.5" ry="125.8"/>
+            </svg>
+            <svg class='nixie-number nixie-number-5'  viewBox="0 0 256 512" version="1.1">
+                <path class="nixie-number-part"
+                      d="M38.3,442.6C59.3,477,91.7,499,128,499c63.5,0,115-67.5,115-150.7s-51.5-150.7-115-150.7"/>
+                <path class="nixie-number-part" d="M13,13c0,102,51.5,184.7,115,184.7"/>
+                <line class="nixie-number-part" x1="13" y1="13" x2="227.3" y2="13"/>
+            </svg>
+            <svg class='nixie-number nixie-number-7'  viewBox="0 0 256 512" version="1.1">
+                <line class="nixie-number-part" x1="15.5" y1="13" x2="240.5" y2="13"/>
+                <line class="nixie-number-part" x1="128" y1="496.7" x2="240.5" y2="13"/>
+            </svg>
+            <svg class='nixie-number nixie-number-6'  viewBox="0 0 256 512" version="1.1">
+                <circle class="nixie-number-part" cx="128" cy="384" r="115"/>
+                <line class="nixie-number-part" x1="18.6" y1="348.3" x2="120.2" y2="13"/>
+            </svg>
+        </div>
+    </div>
+    <div id='clock-surface'></div>
+</span></a><br>
+
+  <a href="./kururu/">
+    <img alt="" src="./img/logo-electron.svg" style="float: left;width: 35px;height: 35px; margin-right: 30px;vertical-align: middle;background-color: #ffffffb6;border-radius: 50px;"><span class="icon-text" face="comic sans ms" >万恶之源-miHoYo</span></a><br>
+
+  <a rel="noopener" href="./daily/" ><img alt="" src="./img/codepen-icon.svg" style="float: left;width: 35px;height: 35px; margin-right: 30px;vertical-align: middle;background-color: #ffffffb6;border-radius: 50px;"><span class="icon-text"></span>我的日常</a><br>
+  <a rel="noopener" href="./apiao/"><img alt="" src="./img/fitness-outline.svg" style="float: left;width: 35px;height: 35px; margin-right: 30px;vertical-align: middle;background-color: #ffffffb6;border-radius: 50px;"><span class="icon-text"></span>可耐的阿飘</a><br>
+
+  
+  <a rel="noopener" href="https://2017.makemepulse.com/" target="_blank"><img alt="" src="./img/bonfire-outline.svg" style="float: left;width: 35px;height: 35px; margin-right: 30px;vertical-align: middle;background-color: #ffffffb6;border-radius: 50px;"><span class="icon-text"></span>优秀学习案例</a>
+    <style>
+    
+    .sidebar {
+      height: 100%;
+      width: 85px;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: #000000;
+      opacity: 0.8;
+      transition: 0.5s;
+      overflow-x: hidden;
+      padding-top: 200px;
+      white-space: nowrap;
+    }
+    
+    .sidebar a {
+      padding: 8px 8px 8px 26px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #afacac;
+      display: block;
+    }
+    
+    .sidebar a:hover {
+      color: #ffffff;
+    }
+    
+    main .sidebar {
+      position: absolute;
+      top: 0;
+      right: 35px;
+      font-size: 36px;
+      margin-left: 70px;
+    }
+    
+    .material-icons,
+    .icon-text {
+      vertical-align: middle;
+    }
+    
+    .material-icons {
+      padding-bottom: 3px;
+      margin-right: 70px;
+    }
+    
+    #main {
+        position: absolute;
+        top: 80px;
+      padding: 16px;
+      margin-left: 86px;
+      transition: margin-left 0.5s;
+    }
+    
+    @media screen and (max-height: 450px) {
+      .sidebar {
+        padding-top: 15px;
+      }
+      .sidebar a {
+        font-size: 18px;
+      }
+    }
+    </style>
+    <script>
+        var mini = true;
+    
+    function toggleSidebar() {
+      if (mini) {
+        // console.log("opening sidebar");
+        // 展开宽度
+        document.getElementById("mySidebar").style.width = "370px";
+        document.getElementById("main").style.marginLeft = "370px";
+        this.mini = false;
+      } else {
+        // console.log("closing sidebar");
+        document.getElementById("mySidebar").style.width = "85px";
+        document.getElementById("main").style.marginLeft = "85px";
+        this.mini = true;
+      }
+    }
+    </script>
+</div>
+
+    
+<!-- 音乐播放器样式 -->
+
+<div id="main">
+    <body >
+        <div id="player">
+            <!-- 歌曲信息模块 -->
+            <div id="player-content1">
+                <!-- 歌曲名 -->
+                <div class="music-name"></div>
+                <!-- 歌手名 -->
+                <div class="artist-name"></div>
+                <!-- 歌曲时间 -->
+                <div class="time">
+                    <!-- 当前播放的时间 -->
+                    <div class="current-time"></div>
+                    <!-- 歌曲总时长 -->
+                    <div class="total-time"></div>
+                </div>
+                <!-- 进度条 -->
+                <div id="s-area">
+                    <!-- 鼠标移动到进度条上，显示的时间信息 -->
+                    <div id="ins-time"></div>
+                    <!-- 鼠标移动到进度条上，进度条变暗部分-->
+                    <div id="s-hover"></div>
+                    <!-- 表示当前歌曲播放进度的蓝色进度条 -->
+                    <div id="seek-bar"></div>
+                </div>
+            </div>
+    
+            <!-- 控制模块 -->
+            <div id="player-content2">
+                <!-- 左侧歌曲封面旋转模块 -->
+                <div class="music-imgs">
+                    <!-- 封面图 -->
+                    <div class="img"></div>
+                    <!-- 歌曲缓冲时的提示文字 -->
+                    <div id="buffer-box">缓冲中…</div>
+                </div>
+                <!-- 右侧歌曲操作模块 -->
+                <div class="player-controls">
+                    <!-- 上一首按钮 -->
+                    <div class="btns prev iconfont">&#xe603;</div>
+                    <!-- 暂停/播放 按钮 -->
+                    <div class="btns play-pause icon-jiediankaishi iconfont"></div>
+                    <!-- 下一首按钮 -->
+                    <div class="btns next iconfont">&#xe602;</div>
+                </div>
+            </div>
+        </div>
+        <script src="js/jquery-3.4.1.min.js"></script>
+        <script src="js/index.js"></script>
+    </body>
+
+  <p style="font-size: large;color: white;font-family: fangsong;">/&nbsp;休对故人思故国</p>
+  <p style="font-size: large;color: white;font-family: fangsong;">&nbsp;&nbsp;且将新火试新茶</p>
+  <h2  style="color: white;font-family: fangsong;font-size: xx-large;">&nbsp; &nbsp;&nbsp; 诗酒趁年华 &nbsp;/</h2>
+</div>
+
+
+<!-- 回到顶部按钮 -->
+	<style>
+		
+			/*星星特效背景*/
+		body {
+            background: radial-gradient(200% 100% at bottom center, #f7f7b6, #e96f92, #75517d, #1b2947);
+            background: radial-gradient(220% 105% at top center, #1b2947 10%, #75517d 40%, #e96f92 65%, #f7f7b6);
+            background-attachment: fixed;
+            /* 阻止用户代理表 */
+            margin: 0 !important;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(0);
+            }
+
+            100% {
+                transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(-360deg);
+            }
+        }
+
+        #stars {
+            transform: perspective(500px);
+            transform-style: preserve-3d;
+            position: fixed;
+            perspective-origin: 50% 100%;
+            left: 50%;
+            animation: rotate 60s infinite linear;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        .star {
+            width: 2px;
+            height: 2px;
+            background: #f7f7b8;
+            position: fixed;
+            top: 0px;
+            left: 0;
+            backface-visibility: hidden;
+        }
+
+</style>
+</head>
+
+<table width="100%"  >
+<body>
+<!-- <body class="cursor"> -->
+		<!-- 星星特效 -->
+    <div id="stars">
+
+    </div>
+    <link rel="stylesheet" href="./css/80.css">
+
+    <script>
+        (function () {
+            let starsCount = 521; //星星数量
+            let distance = 800;//间距
+            let parentStarts = document.getElementById("stars");
+            for (let i = 0; i < starsCount; i++) {
+
+            //封装一个函数 执行异步操作
+            (function(i){
+            setTimeout(function(){
+                
+                let childStart = document.createElement("div");
+                childStart.setAttribute("class", 'star');
+                parentStarts.appendChild(childStart);
+ 
+                let item = parentStarts.children[i];
+                let speed = 0.2 + (Math.random() * 1);
+                let thisDistance = distance + (Math.random() * 300);
+                // console.log(parentStarts);
+                // console.log(i);
+                item.style.transformOrigin = "0 0 " + thisDistance + "px";
+                item.style.transform = "translate3d(0,0,-" + thisDistance + "px) rotateY(" + (Math.random() * 360) + "deg) rotateX(" + (Math.random() * -50) + "deg) scale(" + speed + "," + speed + ")";
+
+                        },1000*i)
+            })(i)
+
+            }
+        })();
+    </script>
+	
+    <table >
+        <tr height="800px">
+        <td>
+                    <!-- 𝘽𝘼𝙄 ✨𝘽𝘼𝙄𝙂𝙐𝘼𝙉𝙂𝙎𝙀𝙉 𝙔𝙮 -->
+                    <style>
+                        .texttype{
+                            font-family: 'fangsong';
+                            display: inline-block;
+                            position: absolute;
+                          font-size: 60px;
+                          margin-top: 100px;    
+                          margin-bottom: 200px;
+                          left: 30%;
+                          height: 60px;
+                          line-height: 60px;
+                          color: rgb(255, 255, 255);
+                        }
+                        .texttype::after{
+                            content: ' ';
+                            position: absolute;
+                            right: -10px;
+                            top: -10px;
+                            height: 80px;
+                            width: 5px;     
+                            background-color: #fff;
+                            animation: san 1.5s steps(30) infinite;
+                        }
+                        @keyframes san{
+                            0%,100%{
+                                background-color: #ffffff ;
+                                /* height: 80px; */
+                            }
+                            50%{
+                               background-color: transparent;
+                               /* height: 30px; */
+                            }
+                
+                        }
+                    </style>
+                    <body>
+                        <h1>
+                            <span class="texttype" ></span>
+                        </h1>
+                            <script>
+                               <!-- 获取.text标签 -->
+                            const texttype = document.querySelector('.texttype');
+                            //  <!-- 定义数组，里面放上文本 -->
+                            const txt  =["亻尔女子，我是木白广木林。","欢→迎↗光↑临↓↑","⎛⎝ ︵ ⎠⎞ ✨𝘽𝙮-𝘽𝘼𝙄𝙂𝙐𝘼𝙉𝙂𝙎𝙀𝙉"]; 
+                            // <!-- 定义当前要显示的字符串的第几个字符 -->
+                            var index=0;
+                            // <!-- 定义文本数组的下标 -->
+                            var xiaBiao= 0;
+                            // <!-- 定义huan，拿来判断是要实现打字还是删除字效果，初始为真 -->
+                            var huan = true;
+                        //  <!-- 定义一个定时器，200毫秒执行一次 -->
+                        var timer = 0;
+                            setInterval(function(){
+                            //    <!-- huan为真 -->
+                                if(huan){             
+                                    // <!-- 给.text标签添加字符，用.slice方法 --> 
+                                    texttype.innerHTML = txt[xiaBiao].slice(0,++index);
+                                    // console.log(index)
+                                }
+                                else if(timer<=1){
+                                //   <!-- 给.text标签删除字符，用.slice方法 --> 
+                                    texttype.innerHTML = txt[xiaBiao].slice(0,index--);
+                                    // console.log(index)
+                    
+                                }
+                                
+                                // <!-- 判断当前index是否为当前字符串长度了+3了 ，+3是为了打完后多等会，多走3个啥也不做的轮回-->
+                                if(index==txt[xiaBiao].length+3)
+                                {
+                                // <!-- huan变为假，开始执行删除文字效果 -->
+                                    huan = false;
+                                }
+                                // <!-- 如果删完了 -->
+                                else if(index<0)
+                                {   
+                                // <!-- index=0，huan为真，从头开始打字 -->
+                                    index = 0;
+                                    timer =timer + 1;
+                                    // console.log(timer); 显示计数器次数
+                                    huan = true;
+                                    // <!-- 数组下标加1 -->
+                                    xiaBiao++;
+                                    if(xiaBiao>=txt.length)
+                                    {   
+                                    // <!-- 如果数组下标超过了，又回到0 -->
+                                        xiaBiao=0; 
+                                    }
+                                }
+                    
+                            },200)
+
+                        </script>
+                    </body>
+                    
+                </td>
+        </tr>
+    </table>
+</body>
+</table>
+
+<!-- 轮播图 -->
+<body>
+<style>
+        
+    .container{
+        position: relative;
+		margin-top: 400px;
+        margin-bottom: -200px;
+        left:50%;
+        /* top:50%; */
+        transform: translate(-50%,-50%);
+        width: 1200px;
+        height: 630px;
+        /* padding: 50px; */
+        background-color: #000000;
+        border-radius: 90px;
+        box-shadow: 0 30px 50px #dbdbdb;
+        
+    }
+    #slide{
+       
+        width:max-content;
+        margin-top:50px;
+        z-index: 1;
+    }
+   .item{
+    
+    width:200px;
+    height:300px;
+    background-position: 50% 50%;
+    display: inline-block;
+    transition: 0.5s;
+    background-size: cover;
+    position: absolute;
+    z-index: 1;
+    top:50%;
+    transform: translate(0,-50%);
+    border-radius: 20px;
+    box-shadow:  0 30px 50px #505050;
+}
+.item:nth-child(1),
+.item:nth-child(2){
+    left:0;
+    top:0;
+    transform: translate(0,0);
+    border-radius: 90px;
+    width:100%;
+    height:100%;
+    box-shadow: none;
+}
+.item:nth-child(3){
+    left:75%;
+}
+.item:nth-child(4){
+    left:calc(75% + 220px);
+}
+.item:nth-child(5){
+    left:calc(75% + 440px);
+}
+.item:nth-child(n+6){
+    left:calc(75% + 660px);
+    opacity: 0;
+}
+.item .content{
+    position: absolute;
+    top:50%;
+    left:100px;
+    width:300px;
+    text-align: left;
+    padding:0;
+    color:#eee;
+    transform: translate(0,-50%);
+    display: none;
+    font-family: system-ui;
+}
+.item:nth-child(2) .content{
+    display: block;
+    z-index: 2;
+}
+.item .name{
+    font-size: 40px;
+    font-weight: bold;
+    opacity: 0;
+    animation:showcontent 1s ease-in-out 1 forwards
+}
+.item .des{
+    margin:20px 0;
+    opacity: 0;
+    animation:showcontent 1s ease-in-out 0.3s 1 forwards
+}
+.item button{
+    padding:10px 20px;
+    border:none;
+    opacity: 0;
+    animation:showcontent 1s ease-in-out 0.6s 1 forwards
+}
+@keyframes showcontent{
+    from{
+        opacity: 0;
+        transform: translate(0,100px);
+        filter:blur(33px);
+    }to{
+        opacity: 1;
+        transform: translate(0,0);
+        filter:blur(0);
+    }
+}
+.buttons{
+    position: absolute;
+    bottom:30px;
+    z-index: 10;
+    text-align: center;
+    left: 80%;
+    /* width:100%; */
+}
+.buttons button{
+    width:50px;
+    height:50px;
+    border-radius: 50%;
+    border:1px solid #555;
+    transition: 0.5s;
+}.buttons button:hover{
+    background-color: #83abc3;
+}
+    </style>
+        <div class="container">
+            <div id="slide">
+                <div class="item" style="background-image: url(./img/1.jpg);">
+                    <div class="content">
+                        <div class="name" style="color: #000000;">谨防诈骗</div>
+                        <div class="des" style="color: #000000;padding-left: 10px;">“我有一个朋友，她非常善良。”</div>
+                        </br>
+                        <button onclick="window.open('https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.788.recommend_more_video.-1&vd_source=d6c02133079fe1c34dfbb021bc307b73') " class="but">See more</button>
+                        <style>
+                            .but{
+                                background-color:#656565;
+                                color:white;
+                                width: 100px;
+                                height: 45px;
+                                border:0;
+                                font-size: 16px;
+                                box-sizing: content-box;
+                                border-radius: 5px;
+                                margin-left: 250px;
+                                }
+                                button:hover{
+                                background-color: #840200;
+                                }
+                        </style>
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(./img/2.jpg);">
+                    <div class="content">
+                        <div class="name">爱莉希雅 Elysian</div>
+                        <div class="des">神爱世人</div>
+                        <!-- <button>See more</button> -->
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(./img/3.jpg);">
+                    <div class="content">
+                        <div class="name" style="color: #000000;">如飞花般绚烂</div>
+                        <div class="des" style="color: #000000;">愿我如星君如月，夜夜流光相皎洁。</div>
+                        <!-- <button>See more</button> -->
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(./img/4.jpg);">
+                    <div class="content">
+                        <div class="name">无暇</div>
+                        <div class="des">“说起粉色头发的女孩，你第一个会想到谁？321回答！”</div>
+                        <!-- <button>See more</button> -->
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(./img/5.jpg);">
+                    <div class="content">
+                        <div class="name">以心为剑</div>
+                        <div class="des">满堂花醉三千客,一剑霜寒十四州。</div>
+                        <!-- <button>See more</button> -->
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(./img/6.jpg);">
+                    <div class="content">
+                        <div class="name">月照万川</div>
+                        <div class="des">万一禅关砉然破,美人如玉剑如虹。</div>
+                        <!-- <button>See more</button> -->
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <button id="prev"><i ><</i></button>
+                <button id="next"><i >></i></button>
+            </div>
+        </div>
+        <script>
+            document.documentElement.style.overflowX = "hidden";
+            // 太强了！隐藏x轴滚动条
+            document.getElementById('next').onclick = function(){
+                let lists = document.querySelectorAll('.item');
+                document.getElementById('slide').appendChild(lists[0]);
+            }
+            document.getElementById('prev').onclick = function(){
+                let lists = document.querySelectorAll('.item');
+                document.getElementById('slide').prepend(lists[lists.length - 1]);
+            }
+        </script>
+    </body>
+
+<!-- f4 -->
+<div id="box" class="box">
+	<style>
+    .box {
+        opacity: 0;
+        transition: opacity 2s;
+    }
+    .box.show {
+        opacity: 1;
+    }
+
+    .box {
+        position: fixed;
+        /* 让盒子在底部 */
+        bottom: 0;
+        left: 0px;
+        /* 因为要无缝衔接 所以width要设置为100% */
+        width: 100%;
+        /* 图片最高高度 */
+
+        /* 不可点击区域 */
+        height: 5px;
+        /* 背景颜色 看效果用的之后要注释掉 */
+        /* <!-- background-color: pink; --> */
+        
+    }
+
+    /* 第一个盒子样式 */
+    .box_noe {
+        position: absolute;
+        bottom: 0;
+        left: -170px;
+        /* 开始的时候我们让他变成透明的 然后动画慢慢的出现 */
+        /* <!-- opacity: 0; --> */
+        /* width要原图/2 分为两份 308/2=154px */
+        width: 154px;
+        /* 高度和图片一样 */
+        height: 121px;
+        /* 盒子要控制位置和移动 */
+        /* 设置动画的总时间,然后要设置一下每一个人的出场顺序 */
+        animation: box_move 16s linear infinite;
+        
+    }
+
+    .one {
+        /* 这个控制背景图片及人物的动画 */
+        width: 154px;
+        height: 121px;
+        background: url(./img/txgc_6d0e9e5.png) no-repeat;
+        overflow: hidden;
+        /* 因为图片只有2个动作所以用步长 用2步完成这个动画 这样人就动了起来*/
+        animation: imgAnimation_one .5s steps(2) infinite;
+        
+    }
+
+    .box_two {
+        position: absolute;
+        bottom: 0;
+        left: -170px;
+        /* width要原图/2 分为两份 308/2=154px*/
+        width: 167px;
+        /* 高度和图片一样 */
+        height: 176px;
+        /* 盒子要控制位置和移动 */
+        animation: box_move 16s linear 2s infinite;
+        z-index: 99
+    }
+
+    .two {
+        /* 这个控制背景图片及人物的动画 */
+        width: 167px;
+        height: 176px;
+        background: url(./img/txgh_fee2457.png) no-repeat;
+        overflow: hidden;
+        /* 因为图片只有2个动作所以用步长 用2步完成这个动画 这样人就动了起来*/
+        animation: imgAnimation_two .5s steps(2) infinite;
+        
+    }
+
+    .box_three {
+        position: absolute;
+        bottom: 0;
+        left: -170px;
+        /* width要原图/2 分为两份 308/2=154px*/
+        width: 161px;
+        /* 高度和图片一样 */
+        height: 149px;
+        /* 盒子要控制位置和移动 */
+        animation: box_move 16s linear 4s infinite;
+        
+    }
+
+    .three {
+        /* 这个控制背景图片及人物的动画 */
+        width: 161px;
+        height: 149px;
+        background: url(./img/txgl_c15cfd8.png) no-repeat;
+        overflow: hidden;
+        /* 因为图片只有2个动作所以用步长 用2步完成这个动画 这样人就动了起来*/
+        animation: imgAnimation_three .5s steps(2) infinite;
+        
+    }
+
+    .box_four {
+        position: absolute;
+        bottom: 0;
+        left: -170px;
+        /* width要原图/2 分为两份 308/2=154px*/
+        width: 171px;
+        /* 高度和图片一样 */
+        height: 157px;
+        /* 盒子要控制位置和移动 */
+        animation: box_move 16s linear 6s infinite;
+        
+    }
+
+    .four {
+        /* 这个控制背景图片及人物的动画 */
+        width: 171px;
+        height: 157px;
+        background: url(./img/txgq_d281c9b.png) no-repeat;
+        overflow: hidden;
+        /* 因为图片只有2个动作所以用步长 用2步完成这个动画 这样人就动了起来*/
+        animation: imgAnimation_four .5s steps(2) infinite;
+        
+    }
+
+    /* 发现所有的图片都是不一样的所以每一个都要有自己单独的动画 */
+    @keyframes imgAnimation_one {
+
+        /* 百分百的时候让图片的背景位置走 */
+        100% {
+            /* 走的必须是整张图片的宽度 这样才可以无限衔接 */
+            background-position: -308px 0;
+        }
+    }
+
+    @keyframes imgAnimation_two {
+
+        /* 百分百的时候让图片的背景位置走 */
+        100% {
+            /* 走的必须是整张图片的宽度 这样才可以无限衔接 */
+            background-position: -334px 0;
+        }
+    }
+
+    @keyframes imgAnimation_three {
+
+        /* 百分百的时候让图片的背景位置走 */
+        100% {
+            /* 走的必须是整张图片的宽度 这样才可以无限衔接 */
+            background-position: -322px 0;
+        }
+    }
+
+    @keyframes imgAnimation_four {
+
+        /* 百分百的时候让图片的背景位置走 */
+        100% {
+            /* 走的必须是整张图片的宽度 这样才可以无限衔接 */
+            background-position: -342px 0;
+        }
+    }
+
+    /* 定义盒子的动画让他们走起来 */
+    @keyframes box_move {
+
+        /* 百分之0的时候 页面上是看不到他们的 */
+        0% {
+            transform: translate(0, 0);
+        }
+        100% {
+
+            /* 然后走一个屏幕的距离这样就可以无缝衔接了 我的屏幕像素是1920px*1280px */
+            transform: translate(2090px, 0);
+        }
+    }
+</style>
+<script>
+    window.onload = function() {
+        var box = document.getElementById("box");
+        var timer;
+
+        // <!-- 鼠标点击隐藏图片 -->
+        box.addEventListener("click", function() {
+            box.classList.remove("show");
+        });
+        
+        // <!-- 鼠标离开后计时器计时，完毕加载图片 -->
+        document.addEventListener("mouseleave", function() {
+            setTimeout(function() {
+            box.classList.add("show");
+        }, 300000);
+        }
+		);
+        
+        document.addEventListener("mouseenter", function() {
+            resetTimer();
+            // <!-- box.classList.remove("show"); -->
+            // <!-- 鼠标进入时清空计时器，并隐藏图片 -->
+            box.classList.add("hide");
+        });
+
+        function resetTimer() {
+            clearTimeout(timer);
+            
+        }
+        
+        // <!-- showImage(); -->
+    };
+</script>
+        <div class="box_noe">
+            <div class="one"></div>
+        </div>
+        <div class="box_two">
+            <div class="two"></div>
+        </div>
+        <div class="box_three">
+            <div class="three"></div>
+        </div>
+        <div class="box_four">
+            <div class="four"></div>
+        </div>
+    </div>
+
+<!--导航栏-->
+<link rel="stylesheet" href="./css/dhl.css">
+<div id="a0"></div>
+<div class="header">
+    <nav id="navbar">
+        <img alt="" src="img/h.png" class="logo">  
+        <ul id="menu">
+            <li ><a id="a00" href="#a0" class="smooth na"><em >首页</em></a></li>
+            <li ><a id="a11" href="#a1" class="smooth"><em >个人特长</em></a></li>
+            <li ><a id="a22" href="#a2" class="smooth"><em >关于本人</em></a></li>
+            <li ><a id="a33" href="#a3" class="smooth"><em >My Life</em></a></li>
+            <li ><a id="a44" href="#a4" class="smooth"><em >简历文件</em></a></li>
+            <li ><a id="a55" href="#a5" class="smooth"><em >拜个早年</em></a></li>
+            <li ><a id="a66" href="#a6" class="smooth"><em >404</em></a></li>
+            <li ><a id="a77" href="#a7" class="smooth"><em >灿灿星河</em></a></li>
+            <li ><a id="a88" href="#a8" class="smooth"><em >当前小目标</em></a></li>
+        </ul>
+    </nav>
+</div>
+
+</html>
+
+<!-- 回到顶部按钮 -->
+<div class="com" title="点击回到顶部">
+    <style>
+        /*火箭动态效果*/
+		 .com {
+		  background-image: url("./img/top.png");
+		  position: fixed;
+		  top: 78%;
+		  right: 1%;
+		  width: 150px;
+		  height: 175px;
+		  border-radius: 100%;
+		  display: none;  /*按照距离隐藏*/
+		  z-index: 99;     
+          /* <!-- 立体度 --> */
+    }
+    .com:hover {
+      animation: fly .6s steps(1) infinite; 
+      background-image: url("./img/blbl.png");
+    }
+    @keyframes fly {
+      0% {
+        background-position-x: 0;
+      }
+      
+      25% {
+        background-position-x: -150px;
+      }
+     
+      50% {
+        background-position-x: -300px;
+      }
+      
+      75% {
+        background-position-x: -4500px;
+      }
+      
+      to {
+        background-position-x: -600px;
+      }
+    }
+    </style>
+		<!-- <script src="./js/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script> -->
+    	<script src="./js/jquery.anchor.1.0.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+        var navbar = document.getElementById("navbar");
+        var menu = document.getElementById("menu");
+        //1.获取元素
+        var com = document.querySelector('.com')
+         //2.绑定滚动事件
+        $(function() {
+				$(window).scroll(function() {
+            // 默认一个页面只能同时存在一个window.onscroll函数。
+            //2-1.获取浏览器卷去的高度
+            var height = document.documentElement.scrollTop || document.body.scrollTop
+            //2-2. 判断卷去的高度
+            // if( window.pageYOffset >= menu.offsetTop){
+                // 返回失效
+            if( height >= 2150 ){
+                //显示
+                navbar.classList.add("sticky");
+                com.style.display = 'block';
+                // console.log(height)
+            }
+            else {
+                //隐藏
+                navbar.classList.remove("sticky");
+                com.style.display = 'none';
+                // console.log(height)
+            }
+            //3.绑定点击事件
+            com.onclick = function () {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                })
+            }
+					//为页面添加页面滚动监听事件
+					var wst = $(window).scrollTop() + 250 //滚动条距离顶端值,增加容错率
+					for (i = 0; i < 9; i++) { //加循环
+						if ($("#a" + i).offset().top <= wst) { //判断滚动条位置
+							$('#navbar a').removeClass("na"); //清除c类
+							$("#a" + i + i).addClass("na"); //给当前导航加c类
+						}
+					}
+				})
+				$('#navbar a').click(function() {
+					$('#navbar a').removeClass("na");
+					$(this).addClass("na");
+				});
+			});
+			$(".smooth").zxxAnchor({
+				anchortag: "href"
+			});
+            
+    </script>
+</div>
+	
+    <!--个人特长段-->
+	<div id="a1">
+    <table width="100%" cellspacing="20px" cellpadding="20px" align="center"><br /><br />
+        <tr><th>
+		<font face="comic sans ms" color="white" size="9"><strong>个人特长</strong></font></th></tr><br />
+        <tr>
+            <td align="center" >
+                <div style="height:400px;"><p align="center"><font size="6" face="楷体" color="white">  
+				1、擅长软件的安装与卸载，例如Word、Excel、PPT、Visio等；<br /></p>
+				<p>2、精通单词拼写，例如PE、PS、PR、C/C++、Java等；<br /></p>
+				<p>3、熟悉电脑系统的开关机，主要包括Windows、Linux、Mac、Android、IOS、WP8等系统。<br /></p></font></div>
+            </td>
+        </tr>
+    </table>
+	</div>
+	
+    <!--About Me段-->
+	<div id="a2">
+    <table width="100%" cellspacing="20px" cellpadding="20px" align="center">
+        <tr align="center">
+            <td><br /><br /><br />
+                <font face="comic sans ms" color="white" size="9"><strong>关于本人</strong></font><br />
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%" cellspacing="2px" cellpadding="6px" align="center">
+        <tr>
+            <td align="center">
+                <p align="center" style="font-size: 28px;font-family:楷体;color:white;">2006年美国周刊年度风云人物&nbsp; &#9813</p>
+            </td>
+            <td align="center">
+                <p align="center" style="font-size: 28px;font-family:楷体;color:white;">2009年年度地球卫士奖&nbsp; &#9813</p>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%" cellpadding="2px" cellspacing="6px" align="center">
+        <tr>
+            <td>
+                <p align="center" style="font-size: 28px;font-family:楷体;color:white;">2008年感动中国组委会特别大奖&nbsp; &#9813</p>
+            </td>
+			<td align="center">
+                <p align="center" style="font-size: 28px;font-family:楷体;color:white;">2022年奥林匹克杯获得者&nbsp; &#9813</p>
+            </td>
+        </tr>
+    </table>
+
+    <table width="140px" cellpadding="10px" cellspacing="10px" align="center">
+        <tr>
+            <td>
+               <img alt="旋转木马" src="./img/a.jpg" align="center" height="400px" width="500px">
+			   <img alt="旋转木马" src="./img/b.jpg" height="400px" width="500px">
+            </td>
+            <td>
+			<p align="center" style="text-indent:2em;"><font size="5" face="楷体" color="white">2006的《时代周刊》年度人物是：You。“You”指的是使用用户分享网站的每一个网民。对此，时代周刊的解释是：“风云人物”是我们每一个人，因为随着博客、网络社区、视频网站的兴起，在2006年因特网发生了重大的转变，网络不再是公共机构或组织，网民正在成长为所谓的“新数字民主主义公民”。</font></p>
+<br> </br>
+<p align="center" style="text-indent:2em;"><font size="5" face="楷体" color="white">2008年感动中国的特别奖授予给全体“中国人”。组委会认为，2008年的中国经历了太多悲怆和喜悦，在抗击暴风雪、抗震救灾、举办奥运会、神七航天员太空漫步等事件中，中国人用坚忍、勇敢、智慧向中国和世界交出了满意的答卷。 </td></font></p>
+        </tr>
+        <tr>
+            <td>
+                <p align="center" style="text-indent:2em;"><font size="5" face="楷体" color="white">2019年9月，联合国宣布支付宝推出的“蚂蚁森林”项目获得2019年“地球卫士奖”。这个大奖是由5亿多人共同完成的，所以称为“联合获奖人”。
+当年，支付宝还为广大参与了“蚂蚁森林”项目的网友发放了“地球卫士勋章”，妥妥的官方认证！</font></p>
+<br> </br>
+ <p align="center" style="text-indent:2em;"><font size="5" face="楷体" color="white">2月19日举行的国际奥委会第139次全会上，国际奥委会主席托马斯·巴赫将“奥林匹克奖杯”授予全体中国人民，以感谢中国人民对于北京冬奥会做出的卓越贡献。
+巴赫在颁奖时说：“如果没有中国人民的支持，北京2022年冬奥会不可能达到如此出色的水平。即使是在闭环中，我们也感受到了中国人民的支持。”奥林匹克奖杯，又名“奥林匹克杯”，是奥林匹克奖项之一，于1906年设立，旨在表彰对奥林匹克运动和国际体育事业做出突出贡献、有良好声誉的团体。</font></p> 
+ </td>
+            <td>
+                  <img alt="旋转木马" src="./img/c.jpg" align="center" height="450px" width="450px">
+				   <img alt="旋转木马" src="./img/d.jpg" align="center" height="300px" width="450px">
+            </td>               
+        </tr>       
+    </table><br /><br />
+	</div>
+	
+    <!--My life段-->
+	<div id="a3">
+    <table width="100%" cellspacing="20px" cellpadding="20px" align="center">
+        <tr align="center">
+            <td><br /><br /><br />
+                <font style="font-size: 68px;font-family:comic sans ms;color:black;"><strong>Sad since  2001</strong></font>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%" cellspacing="50px" cellpadding="50px"  align="center">
+        <tr>
+            <td align="center">
+			  <p align="center">
+			  <!-- <font size="12" face="comic sans ms" color="black" style="background-color: #8f7070;border-radius: 20px;padding:10px;box-shadow: 0 0 15px 10px #ffffff;backdrop-filter: blur(50px); ">“迄今为止的人生都大写着失败，但这不影响我继续向前。”</font> -->
+              <!-- <font ><a style="color: #000000;font-size: x-large;" href="./MyLife/">"迄今为止的人生都大写着失败,但这不影响我继续向前"</a></font> -->
+              <font ><a style="color: #000000;font-size: x-large;" href="./hello/">"迄今为止的人生都大写着失败,但这不影响我继续向前"</a></font>
+			  </p>
+			 
+            </td>
+        </tr>
+    </table><div style="height:300px"> </div>
+	</div>
+	
+	
+	
+<!--简历文件-->
+	<div id="a4">
+    <table width="100%" cellspacing="20px" cellpadding="20px" align="center"><br /><br />
+        <tr><th><font face="comic sans ms" color="white" size="9"><strong>简历预览</strong></font></th></tr><br />
+        <tr>
+            <td align="center">
+                <p align="center" ><font size="6" face="楷体" color="white">
+				<a class="this-div3" href="./pdf/" >\野花吐芳不择地</br > &nbsp; &nbsp;幽草吹馥宁只春</br > </br > </br >兹日纵为无事日</br >&nbsp;&nbsp;&nbsp;&nbsp;此身不是自由身\</a>
+				<!-- target="top"属性用于控制链接网页打开的位置（相对于当前网页）。默认情况下，是刷新当前网页所在的窗口，加载新的页面。 -->
+				</p>
+				<br />
+            </td>
+        </tr>
+    </table>
+	</div>
+	
+	
+<!--新年快乐-->
+	<div id="a5">
+    <table width="100%" cellspacing="20px" cellpadding="20px" align="center"><br /><br />
+        <tr><th><font face="comic sans ms" color="white" size="9"><strong>辞暮尔尔，烟火年年。  朝朝夕夕，岁岁平安。<br /></strong></font></th></tr><br />
+        <tr>
+            <td align="center">
+                <p align="center" ><font size="6" face="楷体" color="white" >  
+				<!-- 提前祝你新年快乐<a href="./newyear/newyear.html" title="" target="top">点我点我</a> -->
+				<a class="this-div3" href="./CountDown/" >\历添新岁月</br ><br /> &nbsp; &nbsp;&nbsp;&nbsp;春满旧山河\</br ></a>
+				<p>
+            </td>
+        </tr>
+    </table>
+	</div>
+	
+<!--404-->
+	<div id="a6">
+    <table width="100%" cellspacing="20px" cellpadding="20px" align="center"><br /><br />
+        <tr><th><font face="comic sans ms" color="white" size="9"><strong>404 NOT FOUND!</strong></font></th></tr><br />
+        <tr>
+            <td align="center">
+                <p align="center" ><font size="6" face="楷体" color="white">
+				<!-- <a href="404.html" title="" target="">如果你真的很无聊，点我吧</a> -->
+				<div style="height: 600px;width: 360px;background-color: #75517d;border-radius: 20px;z-index: -10;opacity: 1;">
+                <a class="this-div3" href="404.html" target="top">\人道洛阳花似锦</br ><br /> &nbsp; &nbsp;&nbsp;&nbsp;偏我来时不遇春\</br ></a>
+				</div>
+                <style>
+                    .this-div3{
+                        background-image: -webkit-linear-gradient(left, #147B96, #E6D205 25%, #147B96 50%, #E6D205 75%, #147B96);
+                        -webkit-text-fill-color: transparent;
+                        -webkit-background-clip: text;
+                        -webkit-background-size: 200% 100%;
+                        -webkit-animation:  maskedAnimation 4s infinite linear;
+                        font-size: 48px;
+                        font-family:FangSong;
+                        z-index:9;
+                        
+                         word-wrap: break-word;/*英文的时候需要加上这句，自动换行*/ 
+                        /*自测了这句话没啥用*/
+                        writing-mode: vertical-rl;/*从左向右 从右向左是 writing-mode: vertical-rl;*/  
+                        writing-mode: tb-rl;/*IE浏览器的从左向右 从右向左是 writing-mode: tb-rl；*/ 
+                        text-align: center;
+                        padding-left:50%;
+                        padding-top:10px;
+                        -webkit-display:flex;
+                        display:flex;
+                        flex-direction:column; 
+                        /* align-content: center; */
+                        /* vertical-align: middle; */
+                        justify-content:center;           /*竖排排版*/
+                    }
+                    @keyframes maskedAnimation {
+                        0% {
+                        background-position: 0 0;
+                        }
+                        100% {
+                        background-position: -100% 0;
+                        }
+                    }
+                    </style></div>
+                <!-- 去掉top，配合返回<a href="javascript:history.back(-1)">返回上一页</a> -->
+				</p>
+            </td>
+        </tr>
+    </table>
+	</div>
+	
+	
+	
+	
+<!--背景欣赏-->
+<div id="a7">
+    <table height="1500px" ><br /><br />
+<div class="this-div" >\醉后不知天在水 &nbsp; &nbsp; </br > </br > &nbsp; &nbsp; 满船清梦压星河\</div>
+<style>
+.this-div{
+	background-image: -webkit-linear-gradient(left, #147B96, #E6D205 25%, #147B96 50%, #E6D205 75%, #147B96);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    -webkit-background-size: 200% 100%;
+    -webkit-animation:  maskedAnimation 4s infinite linear;
+    font-size: 50px;
+	font-family:FangSong;
+	z-index:9;
+	
+	 word-wrap: break-word;/*英文的时候需要加上这句，自动换行*/ 
+    /*自测了这句话没啥用*/
+    writing-mode: vertical-rl;/*从左向右 从右向左是 writing-mode: vertical-rl;*/  
+    writing-mode: tb-rl;/*IE浏览器的从左向右 从右向左是 writing-mode: tb-rl；*/ 
+    text-align: center;
+    padding-left:70%;
+	padding-top:110px;
+    -webkit-display:flex;
+    display:flex;
+    flex-direction:column; 
+    /* align-content: center; */
+    /* vertical-align: middle; */
+    justify-content:center;           /*竖排排版*/
+}
+@keyframes maskedAnimation {
+	0% {
+    background-position: 0 0;
+	}
+	100% {
+	background-position: -100% 0;
+	}
+}
+</style>
+    </table>
+	</div>
+	
+    <!-- 底栏 -->
+<div id="a8" style="margin-bottom: 0;">
+    <table width="100%"  height="300px" bgcolor="black"  style="opacity:0.85;z-index: -1;margin-bottom: 0;">
+        <tr>
+            <td>
+                <p align="center" ><font size="7" face="SimSun" color="white">男儿若无凌云志，空负八尺顶天躯</font></p><br /><br />
+				<p align="center" ><font size="4" face="comic sans ms" color="white" style="text-decoration: line-through">Hope my CET4 能过！！</font><font size="4" face="comic sans ms" color="white">&nbsp; &nbsp; &nbsp; 424没过!  ＼(`Δ’)／!</font></p>
+				<p align="center" ><font size="4" face="comic sans ms" color="white" style="text-decoration: line-through">全款购买汤臣一品别墅一栋</font><font size="4" face="comic sans ms" color="white">&nbsp; &nbsp; &nbsp; &#9745 &nbsp; 已完成</font></p>
+				<p align="center" ><font size="4" face="comic sans ms" color="white" style="text-decoration: line-through">全款买下兰博基尼跑车一辆</font><font size="4" face="comic sans ms" color="white">&nbsp; &nbsp; &nbsp; &#9745 &nbsp; 已完成</font></p>
+				<p align="center" ><font size="4" face="comic sans ms" color="white" >改掉吹牛逼的习惯</font><font size="4" face="comic sans ms" color="white">&nbsp; &nbsp; &nbsp; &#9746 &nbsp; 未完成</font></p><br />
+
+                <!-- 手风琴按钮 -->
+                <div style="display: flex;
+                justify-content: center;
+                align-items: center;">
+                <style>
+              .wrapperaa .buttonaa{
+                display: inline-block;
+                height: 60px;
+                width: 60px;
+                /* float: left; */
+                margin: 0 5px;
+                overflow: hidden;
+                background: #fff;
+                border-radius: 50px;
+                cursor: pointer;
+                box-shadow: 0px 10px 10px rgba(0,0,0,0.1);
+                transition: all 0.3s ease-out;
+              }
+              .wrapperaa .buttonaa:hover{
+                width: 200px;
+              }
+              .wrapperaa .buttonaa .iconaa{
+                display: inline-block;
+                height: 60px;
+                width: 60px;
+                text-align: center;
+                border-radius: 50px;
+                box-sizing: border-box;
+                /* line-height: 1px; */
+                transition: all 0.4s ease-out;
+              }
+              .wrapperaa .buttonaa:nth-child(1):hover .iconaa{
+                /* background:#ff0000 ; */
+                background-color:rgb(42,225,232);
+                filter:invert(1);
+                transform: scale(0.65); 
+              }
+              .wrapperaa .buttonaa:nth-child(2):hover .iconaa{
+                background:rgb(244,60,161) ;
+                transform: scale(0.65); 
+                /* background-color:rgb(42,225,232); */
+                filter:invert(1);
+              }
+              .wrapperaa .buttonaa:nth-child(3):hover .iconaa{
+                /* background: #00c8ff; */
+                background:rgb(222,123,29) ;
+                transform: scale(0.65); 
+                filter:invert(1);
+              }
+              .wrapperaa .buttonaa:nth-child(4):hover .iconaa{
+                background:#ffffff ;
+                transform: scale(0.65); 
+                filter:invert(1);
+              }
+              .wrapperaa .buttonaa:nth-child(5):hover .iconaa{
+                /* background: #4267B2; */
+                /* background:#000000 ; */
+                background: linear-gradient(to right,rgb(246,74,40), #ffffff, rgb(70,225,232));
+                transform: scale(0.65); 
+                filter:invert(1);
+              }
+              .wrapperaa .buttonaa:nth-child(6):hover .iconaa{
+                /* background: #4267B2; */
+                background: rgb(245,226,56) ;
+                transform: scale(0.65); 
+                filter:invert(1);
+                    /* img {
+                    z-index: 102;
+                    filter:invert(100%);
+                    } */
+              }
+              .wrapperaa .buttonaa:nth-child(7):hover .iconaa{
+                background:rgb(50,177,103);
+                transform: scale(0.65); 
+                filter:invert(1);
+              }
+              .wrapperaa .buttonaa .iconaa i{
+                /* font-size: 55px; */
+                /* line-height: 10px; */
+                transition: all 0.4s ease-out;
+              }
+              /* .wrapperaa .buttonaa:hover .icon i{
+                color: #000000;
+              } */
+              .wrapperaa .buttonaa span{
+                font-size: 20px;
+                font-weight: 500;
+                /* line-height: 60px; */
+                /* margin-left: 10px; */
+                transition: all 0.4s ease-out;
+              }
+              .wrapperaa .buttonaa:nth-child(1) a{
+                color: #ff0000;
+              }
+              .wrapperaa .buttonaa:nth-child(2) a{
+                color: #00ff48;
+              }
+              .wrapperaa .buttonaa:nth-child(3) a{
+                color: #00c8ff;
+              }
+              .wrapperaa .buttonaa:nth-child(7) a{
+                color: #ff5c9d;
+              }
+              /* .wrapperaa .buttonaa:nth-child(4) a{
+                color: #000000;
+              } */
+              /* .wrapperaa .buttonaa:nth-child(5) span{
+                color: linear-gradient(to top,#515c6f,#00348d);
+                background: linear-gradient(to right,#00c8ff, #000000, #ff0000);
+                -webkit-background-clip: text;
+                color: transparent;
+              } */
+                    </style>
+
+                    <!-- QQ -->
+                    <div class="wrapperaa">
+                       <div class="buttonaa">
+                          <div class="iconaa"> 
+                            <img alt="" src="./img/qq.svg" style="width: 45px;height: 45px;vertical-align: middle;margin-top: 7px; ">
+                          </div>
+                          <a id="link1" style="font-size: large;">QICQ</a>
+                            <!-- 图片元素 -->
+                            <img src="./img/QRqq.jpg" alt="" id="image1">
+                            <style>
+                                /* 图片的初始状态为隐藏 */
+                                #image1 {
+                                    width: 200px;
+                                    height: 200px;
+                                    border-radius: 30px;
+                                  opacity: 0;
+                                  position: absolute;
+                                  transition: opacity 0.5s ease-in-out; /* 添加渐变效果 */
+                                  pointer-events: none; /* 禁止图片接收鼠标事件 */
+                                }
+                              </style>
+                               <script>
+                                var link1 = document.getElementById('link1');
+                                var image1 = document.getElementById('image1');
+                                var hoverTimeout;
+                                var mouseoutTimeout;
+    
+                                // 鼠标悬停事件
+                                link1.addEventListener('mouseover', function() {
+                                // 悬停两秒后显示图片
+                                hoverTimeout = setTimeout(function() {
+                                    image1.style.opacity = '1';
+                                }, 500); // 2000毫秒（2秒）
+                                });
+    
+                                // 鼠标移出事件
+                                link1.addEventListener('mouseout', function() {
+                                // 如果鼠标移出前未达到悬停两秒，取消显示图片的操作
+                                clearTimeout(hoverTimeout);
+    
+                                // 等待鼠标离开两秒后隐藏图片
+                                mouseoutTimeout = setTimeout(function() {
+                                    image1.style.opacity = '0';
+                                }, 1000); // 2000毫秒（2秒）
+                                });
+    
+                                // 鼠标再次悬停事件
+                                image1.addEventListener('mouseover', function() {
+                                // 如果在图片显示期间鼠标再次悬停，取消隐藏图片的操作
+                                clearTimeout(mouseoutTimeout);
+                                });
+                            </script>
+                       </div>
+
+                       <!-- 微信 -->
+                       <div class="buttonaa">
+                          <div class="iconaa">
+                            <img alt="" src="./img/wechat.svg" style="width: 45px;height: 45px;vertical-align: middle;margin-top: 7px;">
+                          </div>
+                          <!-- <span>Wechat</span> -->
+                          <a id="link2" style="font-size: large;">Wechat</a>
+                          <img src="./img/QR微信.png" alt="" id="image2">
+                          <style>
+                            /* 图片的初始状态为隐藏 */
+                            #image2 {
+                                width: 150px;
+                                height: 150px;
+                                border-radius: 5px;
+                              opacity: 0;
+                              position: absolute;
+                              transition: opacity 0.5s ease-in-out; /* 添加渐变效果 */
+                              pointer-events: none; /* 禁止图片接收鼠标事件 */
+                            }
+                          </style>
+                           <script>
+                            var link2 = document.getElementById('link2');
+                            var image2 = document.getElementById('image2');
+                            var hoverTimeout;
+                            var mouseoutTimeout;
+
+                            // 鼠标悬停事件
+                            link2.addEventListener('mouseover', function() {
+                            // 悬停两秒后显示图片
+                            hoverTimeout = setTimeout(function() {
+                                image2.style.opacity = '1';
+                            }, 500); // 2000毫秒（2秒）
+                            });
+
+                            // 鼠标移出事件
+                            link2.addEventListener('mouseout', function() {
+                            // 如果鼠标移出前未达到悬停两秒，取消显示图片的操作
+                            clearTimeout(hoverTimeout);
+
+                            // 等待鼠标离开两秒后隐藏图片
+                            mouseoutTimeout = setTimeout(function() {
+                                image2.style.opacity = '0';
+                            }, 500); // 2000毫秒（2秒）
+                            });
+
+                            // 鼠标再次悬停事件
+                            image2.addEventListener('mouseover', function() {
+                            // 如果在图片显示期间鼠标再次悬停，取消隐藏图片的操作
+                            clearTimeout(mouseoutTimeout);
+                            });
+                        </script>
+                       </div>
+
+                       <!-- 推特 -->
+                       <div class="buttonaa">
+                          <div class="iconaa">
+                            <img alt="" src="./img/twitter.svg" style="width: 45px;height: 45px;vertical-align: middle;margin-top: 7px;">
+                          </div>
+                          <!-- <span>Twitter</span> -->
+                          <a id="link3" style="font-size: large;">Twitter</a>
+                          <!-- <img src="./img/QR推特.png" alt="" id="image3"> -->
+                          <img src="" alt="" id="image3">
+                          <style>
+                            /* 图片的初始状态为隐藏 */
+                            #image3 {
+                                width: 200px;
+                                height: 200px;
+                                border-radius: 10px;
+                              opacity: 0;
+                              position: absolute;
+                              transition: opacity 0.5s ease-in-out; /* 添加渐变效果 */
+                              pointer-events: none; /* 禁止图片接收鼠标事件 */
+                            }
+                          </style>
+                           <script>
+                            var link3 = document.getElementById('link3');
+                            var image3 = document.getElementById('image3');
+                            var hoverTimeout;
+                            var mouseoutTimeout;
+
+                            // 鼠标悬停事件
+                            link3.addEventListener('mouseover', function() {
+                            // 悬停两秒后显示图片
+                            hoverTimeout = setTimeout(function() {
+                                image3.style.opacity = '1';
+                            }, 500); // 2000毫秒（2秒）
+                            });
+
+                            // 鼠标移出事件
+                            link3.addEventListener('mouseout', function() {
+                            // 如果鼠标移出前未达到悬停两秒，取消显示图片的操作
+                            clearTimeout(hoverTimeout);
+
+                            // 等待鼠标离开两秒后隐藏图片
+                            mouseoutTimeout = setTimeout(function() {
+                                image3.style.opacity = '0';
+                            }, 500); // 2000毫秒（2秒）
+                            });
+
+                            // 鼠标再次悬停事件
+                            image3.addEventListener('mouseover', function() {
+                            // 如果在图片显示期间鼠标再次悬停，取消隐藏图片的操作
+                            clearTimeout(mouseoutTimeout);
+                            });
+                        </script>
+                       </div>
+                       
+                       <!-- GitHub -->
+                       <div class="buttonaa">
+                          <div class="iconaa">
+                            <img alt="" src="./img/github.svg" style="width: 45px;height: 45px;vertical-align: middle;margin-top: 7px;">
+                          </div>
+                          <a href="https://github.com/piaoi" target="_blank" rel="noopener" style="color: #000000;font-weight: bold;">Github</a>
+                          <!-- <a href="https://github.com/baiguangsen" target="_blank" rel="noopener">Github</a> -->
+                          <!-- 用target="_blank"就可以让新页面在另一个窗口打开。 -->
+                       </div>
+
+                       <!-- 抖音 -->
+                       <div class="buttonaa" >
+                          <div class="iconaa">
+                            <img  alt="" src="./img/tiktok.svg" style="width: 45px;height: 45px;vertical-align: middle;margin-top: 7px;">
+                            </div>
+                        <!-- <span id="a">Tiktok</span> -->
+                        <a class="a" id="link5">Tiktok</a>
+                        <img src="./img/QR抖音.png" alt="" id="image5">
+                        <style>
+                            #image5 {
+                           width: 150px;
+                           height: 150px;
+                           border-radius: 50%;
+                         opacity: 0;
+                         position: absolute;
+                         transition: opacity 0.5s ease-in-out; /* 添加渐变效果 */
+                         pointer-events: none; /* 禁止图片接收鼠标事件 */
+                       }
+                       </style>
+                        <style type="text/css">
+                            .a{
+                                font-size:20px;
+                                            font-family: "微软雅黑,sans-serif";
+                                            font-weight:bold;
+                                            color:#333333;
+                                            text-shadow: 
+                                            -4px -4px 0px #24f4ee,
+                                            3px 3px 0px #fe1955
+                                }
+                        </style>
+                        <!-- <script src="./js/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script> -->
+                        <script>
+                        var link5 = document.getElementById('link5');
+                        var image5 = document.getElementById('image5');
+                        var hoverTimeout;
+                        var mouseoutTimeout;
+ 
+                        // 鼠标悬停事件
+                        link5.addEventListener('mouseover', function() {
+                        // 悬停两秒后显示图片
+                        hoverTimeout = setTimeout(function() {
+                            image5.style.opacity = '1';
+                        }, 500); // 2000毫秒（2秒）
+                        });
+ 
+                        // 鼠标移出事件
+                        link5.addEventListener('mouseout', function() {
+                        // 如果鼠标移出前未达到悬停两秒，取消显示图片的操作
+                        clearTimeout(hoverTimeout);
+ 
+                        // 等待鼠标离开两秒后隐藏图片
+                        mouseoutTimeout = setTimeout(function() {
+                            image5.style.opacity = '0';
+                        }, 500); // 2000毫秒（2秒）
+                        });
+ 
+                        // 鼠标再次悬停事件
+                        image5.addEventListener('mouseover', function() {
+                        // 如果在图片显示期间鼠标再次悬停，取消隐藏图片的操作
+                        clearTimeout(mouseoutTimeout);
+                        });
+                        </script>
+                       </div>
+
+                       <!-- 支付宝 -->
+                       <div class="buttonaa">
+                          <div class="iconaa">
+                            <img alt="" src="./img/alipay.svg" style="width: 45px;height: 45px;vertical-align: middle;margin-top: 7px;">
+                          </div>
+                          <!-- <span>Twitter</span> -->
+                          <a id="link6" style="font-size: large;color: #2c25b0;">请给我钱(v我50)</a>
+                          <img src="./img/QR支付宝.jpg" alt="" id="image6">
+                          <style>
+                            /* 图片的初始状态为隐藏 */
+                            #image6 {
+                                width: 140px;
+                                height: 140px;
+                                border-radius: 10px;
+                              opacity: 0;
+                              position: absolute;
+                              transition: opacity 0.5s ease-in-out; /* 添加渐变效果 */
+                              pointer-events: none; /* 禁止图片接收鼠标事件 */
+                            }
+                          </style>
+                           <script>
+                            var link6 = document.getElementById('link6');
+                            var image6 = document.getElementById('image6');
+                            var hoverTimeout;
+                            var mouseoutTimeout;
+
+                            // 鼠标悬停事件
+                            link6.addEventListener('mouseover', function() {
+                            // 悬停两秒后显示图片
+                            hoverTimeout = setTimeout(function() {
+                                image6.style.opacity = '1';
+                            }, 1000); // 2000毫秒（2秒）
+                            });
+
+                            // 鼠标移出事件
+                            link6.addEventListener('mouseout', function() {
+                            // 如果鼠标移出前未达到悬停两秒，取消显示图片的操作
+                            clearTimeout(hoverTimeout);
+
+                            // 等待鼠标离开两秒后隐藏图片
+                            mouseoutTimeout = setTimeout(function() {
+                                image6.style.opacity = '0';
+                            }, 500); // 2000毫秒（2秒）
+                            });
+
+                            // 鼠标再次悬停事件
+                            image6.addEventListener('mouseover', function() {
+                            // 如果在图片显示期间鼠标再次悬停，取消隐藏图片的操作
+                            clearTimeout(mouseoutTimeout);
+                            });
+                        </script>
+                       </div>
+
+                        <!-- 哔哩哔哩 -->
+                        <div class="buttonaa">
+                            <div class="iconaa">
+                              <img alt="" src="./img/bilibili.svg" style="width: 45px;height: 45px;vertical-align: middle;margin-top: 7px;">
+                            </div>
+                            <!-- <span>Twitter</span> -->
+                            <a id="link7" style="font-size: large;" rel="noopener" href="https://space.bilibili.com/15214084" target="_blank">Bilibili</a>
+                            <img src="./img/level_6.png" alt="" id="image7">
+                            <style>
+                              /* 图片的初始状态为隐藏 */
+                              #image7 {
+                                  width: 200px;
+                                  height: 200px;
+                                  border-radius: 10px;
+                                opacity: 0;
+                                position: absolute;
+                                transition: opacity 0.5s ease-in-out; /* 添加渐变效果 */
+                                pointer-events: none; /* 禁止图片接收鼠标事件 */
+                              }
+                            </style>
+                             <script>
+                              var link7 = document.getElementById('link7');
+                              var image7 = document.getElementById('image7');
+                              var hoverTimeout;
+                              var mouseoutTimeout;
+    
+                              // 鼠标悬停事件
+                              link7.addEventListener('mouseover', function() {
+                              // 悬停两秒后显示图片
+                              hoverTimeout = setTimeout(function() {
+                                  image7.style.opacity = '1';
+                              }, 500); // 2000毫秒（2秒）
+                              });
+    
+                              // 鼠标移出事件
+                              link7.addEventListener('mouseout', function() {
+                              // 如果鼠标移出前未达到悬停两秒，取消显示图片的操作
+                              clearTimeout(hoverTimeout);
+    
+                              // 等待鼠标离开两秒后隐藏图片
+                              mouseoutTimeout = setTimeout(function() {
+                                  image7.style.opacity = '0';
+                              }, 500); // 2000毫秒（2秒）
+                              });
+    
+                              // 鼠标再次悬停事件
+                              image7.addEventListener('mouseover', function() {
+                              // 如果在图片显示期间鼠标再次悬停，取消隐藏图片的操作
+                              clearTimeout(mouseoutTimeout);
+                              });
+                          </script>
+                         </div>
+                    </div>
+                </div>
+                    <br />
+				<!-- 请尊重作者，请务必保留版权 -->
+                <p align="center" ><font color="white">𝘾𝙤𝙥𝙮𝙧𝙞𝙜𝙝𝙩  &copy;2021-2024  <a style="color:white" >⎛⎝ 𝘽𝙔 ⎠⎞ ✨.</a> 𝘼𝙡𝙡 𝙧𝙞𝙜𝙝𝙩𝙨 𝙧𝙚𝙨𝙚𝙧𝙫𝙚𝙙.<br />𝙋𝙤𝙬𝙚𝙧𝙚𝙙 𝘽𝙮 𝘽𝘼𝙄𝙂𝙐𝘼𝙉𝙂𝙎𝙀𝙉. </font></p>
+<!-- 运行时间及授权 -->
+	<div>
+        <div>
+                <p align="center" style="color:white">本站<span class="anime-face">艰难地</span>运行：<span id="span_dt_dt"></span>
+				<!-- <p style="text-align:center;padding-top:5px;"></p> -->
+	<script type="text/javascript" >
+        // 建站时间统计
+        function show_date_time() {
+            if ("#span_dt_dt".length > 0) {
+                window.setTimeout("show_date_time()", 1000);
+                BirthDay = new Date("12/12/2022 22:22:22");
+                today = new Date();
+                timeold = (today.getTime() - BirthDay.getTime());
+                sectimeold = timeold / 1000;
+                secondsold = Math.floor(sectimeold);
+                msPerDay = 24 * 60 * 60 * 1000;
+                e_daysold = timeold / msPerDay;
+                daysold = Math.floor(e_daysold);
+                e_hrsold = (e_daysold - daysold) * 24;
+                hrsold = Math.floor(e_hrsold);
+                e_minsold = (e_hrsold - hrsold) * 60;
+                minsold = Math.floor((e_hrsold - hrsold) * 60);
+                seconds = Math.floor((e_minsold - minsold) * 60);
+                span_dt_dt.innerHTML = daysold + "天" + hrsold + "小时" + minsold + "分" + seconds + "秒";
+            }
+        }
+
+        show_date_time();
+    </script>
+            <p  align="center" style="color:white">
+            <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            /&nbsp;总访问量
+            <span id="busuanzi_value_site_pv"></span> views.👀&nbsp;&nbsp;/&nbsp;/&nbsp;&nbsp;您是我的第 <span id="busuanzi_value_site_uv"></span> 个小伙伴!🥳&nbsp;/
+            </p>
+<style>
+.cover-bg::before{content:'';position:absolute;top:0;bottom:0;left:0;right:0;z-index:3;background-attachment:fixed;background-image:url(./img/grid.png)}
+.cover-bg.fixed{background-attachment: fixed;background-size: cover;background-position: center center;}
+a.post-feature-image{box-shadow: 4px 4px 10px 0px #0008;transition: transform 1s ease 0s;}
+a.post-feature-image:hover {transform: scale(1.2,1.2);}
+.tools-btns{position:fixed;bottom:40px;right:40px;height:40px;width:40px;text-align:center;font-size:0.6rem;color:#FB7299;visibility:visible;z-index:9;}.tools-btns>div{cursor:pointer;transition:all 0.5s;background:#6666;border-radius:25px;}.site-main.no-bg::after{opacity:0!important;}
+.anime-face {
+    animation: anime-face 5s infinite ease-in-out;
+    display: inline-block;
+    margin: 0 5px;
+}
+@-webkit-keyframes anime-face {
+    2%,24%,80% {
+        -webkit-transform: translate(0,1.5px) rotate(1.5deg);
+        transform: translate(0,1.5px) rotate(1.5deg)
+    }
+
+    4%,68%,98% {
+        -webkit-transform: translate(0,-1.5px) rotate(-.5deg);
+        transform: translate(0,-1.5px) rotate(-.5deg)
+    }
+
+    38%,6% {
+        -webkit-transform: translate(0,1.5px) rotate(-1.5deg);
+        transform: translate(0,1.5px) rotate(-1.5deg)
+    }
+
+    8%,86% {
+        -webkit-transform: translate(0,-1.5px) rotate(-1.5deg);
+        transform: translate(0,-1.5px) rotate(-1.5deg)
+    }
+
+    10%,72% {
+        -webkit-transform: translate(0,2.5px) rotate(1.5deg);
+        transform: translate(0,2.5px) rotate(1.5deg)
+    }
+
+    12%,64%,78%,96% {
+        -webkit-transform: translate(0,-.5px) rotate(1.5deg);
+        transform: translate(0,-.5px) rotate(1.5deg)
+    }
+
+    14%,54% {
+        -webkit-transform: translate(0,-1.5px) rotate(1.5deg);
+        transform: translate(0,-1.5px) rotate(1.5deg)
+    }
+
+    16% {
+        -webkit-transform: translate(0,-.5px) rotate(-1.5deg);
+        transform: translate(0,-.5px) rotate(-1.5deg)
+    }
+
+    18%,22% {
+        -webkit-transform: translate(0,.5px) rotate(-1.5deg);
+        transform: translate(0,.5px) rotate(-1.5deg)
+    }
+
+    20%,36%,46% {
+        -webkit-transform: translate(0,-1.5px) rotate(2.5deg);
+        transform: translate(0,-1.5px) rotate(2.5deg)
+    }
+
+    26%,50% {
+        -webkit-transform: translate(0,.5px) rotate(.5deg);
+        transform: translate(0,.5px) rotate(.5deg)
+    }
+
+    28% {
+        -webkit-transform: translate(0,.5px) rotate(1.5deg);
+        transform: translate(0,.5px) rotate(1.5deg)
+    }
+
+    30%,40%,62%,76%,88% {
+        -webkit-transform: translate(0,-.5px) rotate(2.5deg);
+        transform: translate(0,-.5px) rotate(2.5deg)
+    }
+
+    32%,34%,66% {
+        -webkit-transform: translate(0,1.5px) rotate(-.5deg);
+        transform: translate(0,1.5px) rotate(-.5deg)
+    }
+
+    42% {
+        -webkit-transform: translate(0,2.5px) rotate(-1.5deg);
+        transform: translate(0,2.5px) rotate(-1.5deg)
+    }
+
+    44%,70% {
+        -webkit-transform: translate(0,1.5px) rotate(.5deg);
+        transform: translate(0,1.5px) rotate(.5deg)
+    }
+
+    48%,74%,82% {
+        -webkit-transform: translate(0,-.5px) rotate(.5deg);
+        transform: translate(0,-.5px) rotate(.5deg)
+    }
+
+    52%,56%,60% {
+        -webkit-transform: translate(0,2.5px) rotate(2.5deg);
+        transform: translate(0,2.5px) rotate(2.5deg)
+    }
+
+    58% {
+        -webkit-transform: translate(0,.5px) rotate(2.5deg);
+        transform: translate(0,.5px) rotate(2.5deg)
+    }
+
+    84% {
+        -webkit-transform: translate(0,1.5px) rotate(2.5deg);
+        transform: translate(0,1.5px) rotate(2.5deg)
+    }
+
+    90% {
+        -webkit-transform: translate(0,2.5px) rotate(-.5deg);
+        transform: translate(0,2.5px) rotate(-.5deg)
+    }
+
+    92% {
+        -webkit-transform: translate(0,.5px) rotate(-.5deg);
+        transform: translate(0,.5px) rotate(-.5deg)
+    }
+
+    94% {
+        -webkit-transform: translate(0,2.5px) rotate(.5deg);
+        transform: translate(0,2.5px) rotate(.5deg)
+    }
+
+    0%,100% {
+        -webkit-transform: translate(0,0) rotate(0);
+        transform: translate(0,0) rotate(0)
+    }
+}
+
+@keyframes anime-face {
+    2%,24%,80% {
+        -webkit-transform: translate(0,1.5px) rotate(1.5deg);
+        transform: translate(0,1.5px) rotate(1.5deg)
+    }
+
+    4%,68%,98% {
+        -webkit-transform: translate(0,-1.5px) rotate(-.5deg);
+        transform: translate(0,-1.5px) rotate(-.5deg)
+    }
+
+    38%,6% {
+        -webkit-transform: translate(0,1.5px) rotate(-1.5deg);
+        transform: translate(0,1.5px) rotate(-1.5deg)
+    }
+
+    8%,86% {
+        -webkit-transform: translate(0,-1.5px) rotate(-1.5deg);
+        transform: translate(0,-1.5px) rotate(-1.5deg)
+    }
+
+    10%,72% {
+        -webkit-transform: translate(0,2.5px) rotate(1.5deg);
+        transform: translate(0,2.5px) rotate(1.5deg)
+    }
+
+    12%,64%,78%,96% {
+        -webkit-transform: translate(0,-.5px) rotate(1.5deg);
+        transform: translate(0,-.5px) rotate(1.5deg)
+    }
+
+    14%,54% {
+        -webkit-transform: translate(0,-1.5px) rotate(1.5deg);
+        transform: translate(0,-1.5px) rotate(1.5deg)
+    }
+
+    16% {
+        -webkit-transform: translate(0,-.5px) rotate(-1.5deg);
+        transform: translate(0,-.5px) rotate(-1.5deg)
+    }
+
+    18%,22% {
+        -webkit-transform: translate(0,.5px) rotate(-1.5deg);
+        transform: translate(0,.5px) rotate(-1.5deg)
+    }
+
+    20%,36%,46% {
+        -webkit-transform: translate(0,-1.5px) rotate(2.5deg);
+        transform: translate(0,-1.5px) rotate(2.5deg)
+    }
+
+    26%,50% {
+        -webkit-transform: translate(0,.5px) rotate(.5deg);
+        transform: translate(0,.5px) rotate(.5deg)
+    }
+
+    28% {
+        -webkit-transform: translate(0,.5px) rotate(1.5deg);
+        transform: translate(0,.5px) rotate(1.5deg)
+    }
+
+    30%,40%,62%,76%,88% {
+        -webkit-transform: translate(0,-.5px) rotate(2.5deg);
+        transform: translate(0,-.5px) rotate(2.5deg)
+    }
+
+    32%,34%,66% {
+        -webkit-transform: translate(0,1.5px) rotate(-.5deg);
+        transform: translate(0,1.5px) rotate(-.5deg)
+    }
+
+    42% {
+        -webkit-transform: translate(0,2.5px) rotate(-1.5deg);
+        transform: translate(0,2.5px) rotate(-1.5deg)
+    }
+
+    44%,70% {
+        -webkit-transform: translate(0,1.5px) rotate(.5deg);
+        transform: translate(0,1.5px) rotate(.5deg)
+    }
+
+    48%,74%,82% {
+        -webkit-transform: translate(0,-.5px) rotate(.5deg);
+        transform: translate(0,-.5px) rotate(.5deg)
+    }
+
+    52%,56%,60% {
+        -webkit-transform: translate(0,2.5px) rotate(2.5deg);
+        transform: translate(0,2.5px) rotate(2.5deg)
+    }
+
+    58% {
+        -webkit-transform: translate(0,.5px) rotate(2.5deg);
+        transform: translate(0,.5px) rotate(2.5deg)
+    }
+
+    84% {
+        -webkit-transform: translate(0,1.5px) rotate(2.5deg);
+        transform: translate(0,1.5px) rotate(2.5deg)
+    }
+
+    90% {
+        -webkit-transform: translate(0,2.5px) rotate(-.5deg);
+        transform: translate(0,2.5px) rotate(-.5deg)
+    }
+
+    92% {
+        -webkit-transform: translate(0,.5px) rotate(-.5deg);
+        transform: translate(0,.5px) rotate(-.5deg)
+    }
+
+    94% {
+        -webkit-transform: translate(0,2.5px) rotate(.5deg);
+        transform: translate(0,2.5px) rotate(.5deg)
+    }
+
+    0%,100% {
+        -webkit-transform: translate(0,0) rotate(0);
+        transform: translate(0,0) rotate(0)
+    }
+}
+</style>
+        <div style="text-align: center;">
+             <a class="mytooltip" style="display:inline-block;" target="_blank" > <img src="https://img.foreverblog.cn/logo_en_default.png" alt="" style="width:auto;height:16px;"> </a>
+            |
+            <a class="mytooltip" style="display:inline-block;" href="https://www.travellings.cn/go.html" target="blank" title="开往-友链接力"><img src="./img/logo1.gif" alt="开往-友链接力" width="100"></a>
+            | 
+            <a class="mytooltip" style="display:inline-block;" href="https://www.foreverblog.cn/" target="_blank" rel="noopener"  title="穿梭虫洞-随机访问十年之约友链博客"><img src="./img/logo2.gif" alt="" style="width:auto;height:25px;border-radius: 10px;"></a>
+            |
+            <a class="mytooltip" style="display:inline-block;"  target="blank" title="//拒绝 A·I "><img src="./img/ai.png"  width="100"></a>
+            <style>
+                 #mytitle {
+                    position: absolute;
+                    color: #ffffff;
+                    font-size: 18px;
+                    padding: 4px;
+                    background: rgba(40, 40, 40, 0.8);
+                    border-radius:5px;
+                    z-index:99;
+                }
+            </style>
+            <script>
+                $(function () {
+     
+     var newtitle = '';
+     $('a.mytooltip').mouseover(function (e) {
+         newtitle = this.title;
+         this.title = '';
+         if(newtitle != ''){
+             $('body').append('<div id="mytitle" >' + newtitle + '</div>');
+         }
+         $('#mytitle').css({
+             'left': (e.pageX   + 'px'),
+             'top': (e.pageY  + 'px')
+         }).show();
+     }).mouseout(function () {
+         this.title = newtitle;
+         $('#mytitle').remove();
+     }).mousemove(function (e) {
+         $('#mytitle').css({
+             'left': (e.pageX +10 + 'px'),
+             'top': (e.pageY -40+ 'px')
+         }).show();
+     })
+ });
+
+            </script>
+        </div>
+        </div>
+    </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- <footer> -->
+
+<!-- </footer> -->

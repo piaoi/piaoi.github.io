@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>New Year Count Down</title>
+  <link rel="shortcut icon" type="image/jpg" href="NY.png"/>
+  <link rel="stylesheet" href="./css/style.css">
+<!--   <link rel="stylesheet" href="./css/response.css"> -->
+</head>
+
+<body>
+  
+<section>
+  <div id='clock-surface' style="z-index: 10;" ><a href="../"><img
+    src="../img/arrow-back-circle-outline.svg"
+    alt=""
+    height="100px"
+    width="100px" style="margin-left: 150px; display: flex;border-radius: 50%;height:50px;width:50px;background-color: #ffffffc7;backdrop-filter:blur(50px);" ></a>
+</div>
+<img src="./images/bg.jpg" data-speed='-1'  class="layer" alt="" style="height:100%;">
+ <div class="container">
+   <h2> 
+      <span data-speed='-2' class="layer" >新春倒计时</span>
+<img src="./images/左一.png" data-speed='1'  class="layer" alt="" style="margin-left: 1%;margin-top: -130px; display: flex;height:220px;width:260px;">
+<img src="./images/左二.png" data-speed='3'  class="layer" alt="" style="margin-left: 3%;margin-top: 350px; display: flex;height:220px;width:260px;z-index: 10;">
+<img src="./images/右一.png" data-speed='4'  class="layer" alt="" style="margin-left: 68%;margin-top: -50px; display: flex;height:220px;width:300px;z-index: 10;">
+<img src="./images/右二.png" data-speed='6'  class="layer" alt="" style="margin-left: 68%;margin-top: 350px; display: flex;height:220px;width:360px;z-index: 10;">
+<img src="./images/logo.png" data-speed='12'  class="layer" alt="" style="margin-left: 50%;margin-top: 55%; display: flex;height:150px;width:150px;z-index: 10;">
+<!-- <img src="./images/上岸.png" data-speed='12'  class="layer" alt="" style="margin-left: 8%;margin-top: 5%; display: flex;width:95px;z-index: 10;"> -->
+<img src="./images/上岸.png" data-speed='12'  class="layer" alt="" style="margin-left: 4%;margin-top: 12%; display: flex;height: auto; width: auto\9; width:10%;z-index: 10;filter: drop-shadow(0px 10px 30px #fff200);">
+<img src="./images/pp.png" data-speed='12'  class="layer" alt="" style="margin-left: 1%;margin-top: 57%; display: flex;height:60px;width:45px;z-index: 10;filter: drop-shadow(0px 2px 20px #ecf6ff);">
+
+      <div id="Year" data-speed='1' class="layer">NA</div>
+    </h2>
+    <div class="countdouwn layer" data-speed='2' >
+      <div id="day">NA</div>
+      <div id="hour">NA</div>
+      <div id="minute">NA</div>
+      <div id="second">NA</div>
+    </div>
+  </div>
+</section>
+
+  <script>
+    // 自动为下一年
+    function newYear() {
+      var Y = new Date().getFullYear() + 1
+      // var Y = new Date().getFullYear()
+      // var newDay = '2024' + '/2/10 00:00:00'
+      var newDay = Y + '/1/1 00:00:00'
+      var countDate = new Date(newDay);
+      var now = new Date().getTime()
+      gap = countDate - now;
+      var second = 1000
+      var minute = second * 60
+      var hour = minute * 60
+      var day = hour * 24
+
+      var d = Math.floor(gap / day)
+      var h = Math.floor((gap % day) / hour)
+      var m = Math.floor((gap % hour) / minute)
+      var s = Math.floor((gap % minute) / second)
+
+      // 此处可删除
+      d = addZero(d)
+      h = addZero(h)
+      m = addZero(m)
+      s = addZero(s)
+      // func end
+
+      // 显示的年
+      // document.getElementById('Year').innerText = Y - 1
+      document.getElementById('Year').innerText = Y
+
+
+      // 倒计时
+      document.getElementById('day').innerText = d
+      document.getElementById('hour').innerText = h
+      document.getElementById('minute').innerText = m
+      document.getElementById('second').innerText = s
+      
+      // console.log(h)
+      // console.log(m)
+      // console.log(s)
+// var aa = s
+// console.log(s)
+
+if(d==0){
+      if(h==0){
+        if(m==0){
+          if(s==11){
+            // clearInterval(timer);
+            document.title = "正在准备烟花..."
+            window.location.href = "../WanderingEarth";
+          }
+        }
+      }
+    }
+
+    }
+
+    // 数字小于10前面就加0
+    function addZero(num) {
+      return num < 10 ? '0' + num : num
+    }
+
+    setInterval(() => {
+      newYear()
+    }, 1000)
+
+    // if(time <= 0){
+    //     clearInterval(timer);
+    //     document.title = "正在跳转..."
+    //     window.location.href = "https://baiguangsen.github.io/Piaopiao/";
+    // }
+
+    // 偏移效果
+    document.addEventListener('mousemove', parallax);
+    function parallax(e) {
+        this.querySelectorAll('.layer').forEach(layer => {
+            const speed = layer.getAttribute('data-speed')
+            const x = (window.innerWidth - e.pageX * speed) / 100 - 20
+            const y = (window.innerHeight - e.pageY * speed) / 100 - 10
+            layer.style.transform = `translateX(${x}px) translateY(${y}px)`
+        })
+    }
+  </script>
+
+
+
+</body>
+
+</html>
