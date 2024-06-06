@@ -10,5 +10,5 @@
 
 ![](img/Bottom_up.svg)
 
-Hello World and Piao！<!--   my-skils -->
+Hello World Piao :)
 
