@@ -173,13 +173,14 @@
     .body{
         /* 制作身体 */
         position: relative;
-        width: 100%;
+        width: 150px;
         height: 100%;
         border-top-right-radius: 80px;
         border-top-left-radius: 80px;
         background-color: #fff;
         animation: float 4s ease infinite;
     }
+    
     @keyframes float {
         0%,100%{
             top: 0px;
@@ -312,6 +313,9 @@
         position:sticky;
 		z-index: 100;
 		}
+    @media screen and (max-width:500px){
+    .ghost .body{display:none; }
+    }
 </style>
 <body>
 
@@ -321,7 +325,8 @@
         height="100px"
         width="100px" style=" position: fixed ! important; left: 465px; top: 100px;border-radius: 50%;height:50px;width:50px;background-color: #ffffff7b;backdrop-filter:blur(50px);" type="button" value="" onclick="javascript:history.back();">
     </div>
-    <div > <img style="width: 445px;padding-left: 0px;padding-right: 0px;" src="https://www.dhkk.cn/rili/index.php"></div>
+<!--     <div > <img style="width: 445px;padding-left: 0px;padding-right: 0px;" src="https://www.dhkk.cn/rili/index.php"></div> -->
+    <div > <img style="width:65vh;" src="https://xialiu.cn/api/dan/"></div>
 
     <div class="textwidget custom-html-widget"><div class="card-content">
         <canvas id="canvas" style="width:90%;"></canvas>
