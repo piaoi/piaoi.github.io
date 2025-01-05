@@ -47,10 +47,10 @@
   <script>
     // 自动为下一年
     function newYear() {
-      var Y = new Date().getFullYear() + 1
-      // var Y = new Date().getFullYear()
+      // var Y = new Date().getFullYear() + 1
+      var Y = new Date().getFullYear()
       // var newDay = '2024' + '/2/10 00:00:00'
-      var newDay = Y + '/1/1 00:00:00'
+      var newDay = Y + '/1/28 00:00:00'
       var countDate = new Date(newDay);
       var now = new Date().getTime()
       gap = countDate - now;
